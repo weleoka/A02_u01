@@ -19,7 +19,7 @@ class Main <<final>> {
     + registerUser (): void
     + logInUser (): void
     + bookActivity (): void
-    + {static} quit (): void
+    + quit (): void
 }
 
 'note top of Main: Halleluja\nGogo!
