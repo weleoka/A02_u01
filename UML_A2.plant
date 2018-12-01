@@ -28,17 +28,17 @@ class DbItem {
 class RoomControl <<(S, #FF7700) singleton>> {
     - selectedRoom: Room
     + getRoomActivities (): String []
-    + fetchRoomByActivity (String): void
-    + fetchRoomByRoomID (int): void
+    + fetchRoomByActivity (String activity): void
+    + fetchRoomByRoomID (int roomID): void
     + fetchRoomPlaces (): String[]
-    + assignUserToRoomPlace (userID, placeID): void
+    + assignUserToRoomPlace (int userID, int placeID): void
 }
 class Room <extends DbItem>{
     - roomType: Activity
     - roomID: int
-    + getAllSeats (): String []
-    + getBookedSeats (): String[]
-    + setBookedSeat (id): boolean
+    + getAllPlaces (): String []
+    + getBookedPlaces (): String[]
+    + setBookedPlaces (int placeID): boolean
     + toString (): String
 }
 enum Activity <<enumerate>> {
@@ -51,22 +51,22 @@ enum Activity <<enumerate>> {
 
 class UserControl <<(S, #FF7700) singleton>> {
     - selectedUser: User
-    + createUser (String name, String uid): boolean
+    + createUser (String userName, String userID): boolean
     + removeSelectedUser (): void
-    + fetchUserByUserName (name): User
-    + fetchUserByUserID (uid): User
+    + fetchUserByUserName (String userName): User
+    + fetchUserByUserID (int userID): User
     + loginSelectedUser (): boolean
     + logoutSelectedUser(): boolean
 }
 class User <extends DbItem> {
-    - name: String
+    - userName: String
     - userID: int
     - userStatus: UserStatus
     + toString (): String
     + setActive (): boolean
     + setInactive (): boolean
 }
-enum UserStatus <<enumerate>> {
+enum Status <<enumerate>> {
     1: ACTIVE
     2: INACTIVE
     3: REMOVED
@@ -76,21 +76,23 @@ enum UserStatus <<enumerate>> {
 
 class SubscriptionControl <<(S, #FF7700) singleton>> {
     - selectedSubscription: Subscription
-    + calculateCost (int): double
+    + calculateCost (): double
     + createSubscription (sDate, eDate, userID): boolean
     + removeSelectedSubscription (): boolean
-    + fetchSubscriptionByUserID (int): Subscription
+    + fetchSubscriptionByUserID (int userID): Subscription
     + changeSubscriptionDates(sDate, eDate): boolean
 }
 class Subscription <extends DbItem> {
     - startDate: Date
     - endDate: Date
     - userID: int
-    + setSDate (Date)
-    + setEDate (Date)
-    + calculateCost (): double
-}
+    + setSDate (Date): void
+    + setEDate (Date): void
+    + setActive (): void
+    + setInactive (): void
+    + toString (): String
 
+}
 
 
 '--- Notes on Diagram ---
@@ -103,8 +105,9 @@ WakeUp                  -->     UserControl: <<call>>
 'note on link: This could be easy to forget.
 'User                    -->     Subscription: <<call>>
 SubscriptionControl     *--     Subscription: <<create>>
+Subscription            <--     Status: <<use>>
 UserControl             *--     User: <<create>>
-UserStatus              ->      User: <<use>>
+Status                  ->      User: <<use>>
 RoomControl             <--     WakeUp: <<call>>
 Room                    -*      RoomControl
 'WakeUp                  ->      AuthControl: <<call>>
@@ -137,3 +140,39 @@ note top of WakeUp: important: remember to!
 note right of RoomControl:
 
 
+
+
+Flow - new user:
+
+1) A user starts the application and selects register
+2) The user is prompted for a name and ID.
+3) The ID is checked for validity
+4) A new user is created and the selectedUser is set in USerControl
+5) The new user is prompted for number of months of subscription
+6) A new subscription is created with the date as and from today and th UsersID.
+7) SubscriptionControl has the selectedSubscription variable populated
+8) The cost is calculated and displayed to user. If the selectedUSer is not active
+    then a membership fee is added to the total.
+9) If the user accepts the price then the Subscription and the User is set to Active
+
+
+Flow - Login
+
+1) A user starts the application and selects login.
+2) The user is promted for a name and then a userID
+3) If these are found in the system then the user is authenticated
+4) The menu changes to the logged in menu
+5)
+
+
+Flow - Book Activity
+1) Same flow as for Login and then:
+2) The user selects book Activity from the logged in menu.
+3) A check is done that the user has a valid subscription and
+    that the membership is still in date.
+3) If checks pass then program fetches a list of available activities.
+4) The user selects an activity from the list
+5) The program fetches a list of available spaces in a room for that activity
+6) Then the user selects a space and the program checks that it is a vailable, and that the user is not allready booked.
+7) Once the user has foun an available space the room is updated with the userID
+8) Room saved to database and user is given a confirmation promt and returns to main menu.
