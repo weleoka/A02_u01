@@ -1,43 +1,45 @@
 @startuml
-testdot
-@enduml
-
-@startuml
-
-' Modelling considerations
-' There are no abstract classes
-'
 
 skinparam classAttributeIconSize 0
 skinparam class {
     'BackgroundColor Green
 }
 
-
-class Main <<final>> {
-    - main (String[] args): void
-    + registerUser (): void
-    + logInUser (): void
-    + bookActivity (): void
-    + quit (): void
+class WakeUp <<final>> {
+    - userInput: java.util.Scanner
+    + main (String[] args): void
+    - mainMenu (): void
+    - loggedInMenu (): void
+    - registerUser (): void
+    - logInUser (): void
+    - bookActivity (): void
+    - quit (): void
+}
+class WakeUpHelpers {
+    + validateUserID (User): boolean
+}
+class DbItem {
+    - dbInstance (): DB
+    - fetch (): self
 }
 
-'note top of Main: Halleluja\nGogo!
+
 
 class RoomControl <<(S, #FF7700) singleton>> {
     - selectedRoom: Room
-    + getRoomTypes (): String []
-    + selectRoom (Activity): void
-    + getRoomPlaces (): String[]
-    + addUserToRoom (): boolean
+    + getRoomActivities (): String []
+    + fetchRoomByActivity (String): void
+    + fetchRoomByRoomID (int): void
+    + fetchRoomPlaces (): String[]
+    + assignUserToRoomPlace (userID, placeID): void
 }
-'note right of RoomControl:
-class Room {
+class Room <extends DbItem>{
     - roomType: Activity
-    - roomId: int
-    + getAllSeats(): String []
-    + getBookedSeats(): String[]
-    + setBookedSeat(id): void
+    - roomID: int
+    + getAllSeats (): String []
+    + getBookedSeats (): String[]
+    + setBookedSeat (id): boolean
+    + toString (): String
 }
 enum Activity <<enumerate>> {
     1: SPINNING
@@ -49,44 +51,21 @@ enum Activity <<enumerate>> {
 
 class UserControl <<(S, #FF7700) singleton>> {
     - selectedUser: User
-    - authenticatedUser: boolean
-    + addUser (String name, String uid): boolean
-    + removeUser(): void
-    + findUserByName (name): User
-    + findUserByUID (uid): User
-    + addSubscriptionToUser (sDate, eDate)
-    + loginUser (): boolean
+    + createUser (String name, String uid): boolean
+    + removeSelectedUser (): void
+    + fetchUserByUserName (name): User
+    + fetchUserByUserID (uid): User
+    + loginSelectedUser (): boolean
+    + logoutSelectedUser(): boolean
 }
-class User {
+class User <extends DbItem> {
     - name: String
-    - uId: int
-    + toString(): String
-    + setActive(): boolean
-    + setInactive(): boolean
-    + getActiveSubscription(): Subscription
-    + setActiveSubscription(): boolean
+    - userID: int
+    - userStatus: UserStatus
+    + toString (): String
+    + setActive (): boolean
+    + setInactive (): boolean
 }
-
-
-class AuthControl <<(S, #FF7700) singleton>> {
-    + validateUid(User): boolean
-    + authenticateUser(User): boolean
-}
-
-
-'class SubscrControl <<(S, #FF7700) singleton>> {
-''    - startDate: Date
-''    - endDate: Date
-''}
-class Subscription {
-    - startDate
-    - endDate
-    - userId
-    + setSDate(Date)
-    + setEDate(Date)
-    + calculateCost (): double
-}
-
 enum UserStatus <<enumerate>> {
     1: ACTIVE
     2: INACTIVE
@@ -94,27 +73,55 @@ enum UserStatus <<enumerate>> {
 }
 
 
+
+class SubscriptionControl <<(S, #FF7700) singleton>> {
+    - selectedSubscription: Subscription
+    + calculateCost (int): double
+    + createSubscription (sDate, eDate, userID): boolean
+    + removeSelectedSubscription (): boolean
+    + fetchSubscriptionByUserID (int): Subscription
+    + changeSubscriptionDates(sDate, eDate): boolean
+}
+class Subscription <extends DbItem> {
+    - startDate: Date
+    - endDate: Date
+    - userID: int
+    + setSDate (Date)
+    + setEDate (Date)
+    + calculateCost (): double
+}
+
+
+
+'--- Notes on Diagram ---
+note right of UserControl: If the user is authenitcated\nthen selectedUser is set.
+note "Currently UserID is an INT for development,\nbut will be a String in later implementation." as N1
+
+
 '--- Relations ---
-Main             -->              UserControl: <<call>>
+WakeUp                  -->     UserControl: <<call>>
 'note on link: This could be easy to forget.
-'User            -->              Subscription: <<call>>
-'Subscription    <--             SubscrControl: <<create>>
-UserControl     *--              User: <<create>>
-UserStatus      -->              User: <<use>>
-RoomControl     <--              Main: <<call>>
-Room            -*               RoomControl
-'Main            ->              AuthControl: <<call>>
-Activity        ->               Room: <<use>>
-AuthControl     <-               UserControl: <<call>>
-Subscription    -*               Main: <<create>>
+'User                    -->     Subscription: <<call>>
+SubscriptionControl     *--     Subscription: <<create>>
+UserControl             *--     User: <<create>>
+UserStatus              ->      User: <<use>>
+RoomControl             <--     WakeUp: <<call>>
+Room                    -*      RoomControl
+'WakeUp                  ->      AuthControl: <<call>>
+Activity                -->     Room: <<use>>
+WakeUp                  ->      WakeUpHelpers: <<call>>
+SubscriptionControl     <-      WakeUp: <<call>>
+
+@enduml
 
 
-/'
+
+Document Notes
 Det finns 3 olika typer av aktiviteter (Spinning, Aerobics, och Yoga) och varje aktivitet har totalt 9 platser fördelat
 på 3 rader i salen (rad 1-3, plats a, b, c).
 
-' hide Användare
-' show Användare
+hide Användare
+show Användare
 
 Class01 "1" *-- "many" Class02 : contains
 
@@ -124,6 +131,9 @@ Class05 --> "1" Class06
 
 Usually, a spotted character (C, I, E or A) is used for classes, interface, enum and abstract classes
 class System << (S,# FF7700) Singleton >>
+Modelling considerations
+There are no abstract classes
+note top of WakeUp: important: remember to!
+note right of RoomControl:
 
-'/
-@enduml
+
