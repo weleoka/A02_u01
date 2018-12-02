@@ -1,8 +1,8 @@
 @startuml
 
-skinparam classAttributeIconSize 0
-skinparam class {
+skinparam {
     'BackgroundColor Green
+    classAttributeIconSize 0
 }
 
 class WakeUp <<final>> {
@@ -24,12 +24,11 @@ class DbItem {
 }
 
 
-
 class RoomControl <<(S, #FF7700) singleton>> {
     - selectedRoom: Room
     + getRoomActivities (): String []
-    + fetchRoomByActivity (String activity): void
-    + fetchRoomByRoomID (int roomID): void
+    + selectRoomByActivity (String activity): void
+    + selectRoomByRoomID (int roomID): void
     + fetchRoomPlaces (): String[]
     + assignUserToRoomPlace (int userID, int placeID): void
 }
@@ -52,19 +51,20 @@ enum Activity <<enumerate>> {
 class UserControl <<(S, #FF7700) singleton>> {
     - selectedUser: User
     + createUser (String userName, String userID): boolean
-    + removeSelectedUser (): void
-    + fetchUserByUserName (String userName): User
-    + fetchUserByUserID (int userID): User
+    + selectUserByUserName (String userName): void
+    + selectUserByUserID (int userID): void
     + loginSelectedUser (): boolean
     + logoutSelectedUser(): boolean
+    + removeSelectedUser (): boolean
 }
 class User <extends DbItem> {
     - userName: String
     - userID: int
     - userStatus: UserStatus
     + toString (): String
-    + setActive (): boolean
-    + setInactive (): boolean
+    + setActive (): void
+    + setInactive (): void
+    + setRemoved (): void
 }
 enum Status <<enumerate>> {
     1: ACTIVE
@@ -79,13 +79,14 @@ class SubscriptionControl <<(S, #FF7700) singleton>> {
     + calculateCost (): double
     + createSubscription (sDate, eDate, userID): boolean
     + removeSelectedSubscription (): boolean
-    + fetchSubscriptionByUserID (int userID): Subscription
-    + changeSubscriptionDates(sDate, eDate): boolean
+    + selectSubscriptionByUserID (int userID): void
+    + changeSelectedSubscriptionDates(sDate, eDate): boolean
 }
 class Subscription <extends DbItem> {
     - startDate: Date
     - endDate: Date
     - userID: int
+    - subscriptionStatus: Status
     + setSDate (Date): void
     + setEDate (Date): void
     + setActive (): void
@@ -119,7 +120,49 @@ SubscriptionControl     <-      WakeUp: <<call>>
 
 
 
-Document Notes
+
+
+
+
+Flow - new user:
+1) A user starts the application and selects registerUser from mainMenu.
+2) The user is prompted for a userName and then a userID.
+3) The userID is then checked for validity.
+4) A new User is created and the selectedUser is set in UserControl.
+5) The new user is prompted for number of months of subscription.
+6) A new subscription is created with the date as and from now() and the usersID.
+7) SubscriptionControl has the selectedSubscription variable populated.
+8) The cost is calculated and displayed to user. If the selectedUser is not Active
+    then a membership fee is added to the total.
+9) If the user accepts the price then the Subscription and the User are set to Active
+
+
+Flow - Login
+1) A user starts the application and selects loginUser.
+2) The user is prompted for a name and then a userID.
+3) If these are found in the system then the user is authenticated.
+4) The menu changes to the loggedInMenu.
+
+
+Flow - Book Activity
+1) Same flow as for Login and then:
+2) The user selects bookActivity from the loggedInMenu.
+3) A check is done that the user has a valid subscription and
+    that the membership is still in date.
+3) If checks pass then program fetches a list of available activities.
+4) The user selects an activity from the list.
+5) The program fetches a list of available spaces in the room for that activity.
+6) Then the user selects a space and the program checks that it is a vailable,
+    and that the user is not already booked.
+7) Once the user has found an available place then the room is updated with the userID to that place
+8) Room saved to database and user is given a confirmation message.
+9) Program returns to main menu.
+
+
+
+
+
+--- CnP_dump ---
 Det finns 3 olika typer av aktiviteter (Spinning, Aerobics, och Yoga) och varje aktivitet har totalt 9 platser fördelat
 på 3 rader i salen (rad 1-3, plats a, b, c).
 
@@ -138,41 +181,3 @@ Modelling considerations
 There are no abstract classes
 note top of WakeUp: important: remember to!
 note right of RoomControl:
-
-
-
-
-Flow - new user:
-
-1) A user starts the application and selects register
-2) The user is prompted for a name and ID.
-3) The ID is checked for validity
-4) A new user is created and the selectedUser is set in USerControl
-5) The new user is prompted for number of months of subscription
-6) A new subscription is created with the date as and from today and th UsersID.
-7) SubscriptionControl has the selectedSubscription variable populated
-8) The cost is calculated and displayed to user. If the selectedUSer is not active
-    then a membership fee is added to the total.
-9) If the user accepts the price then the Subscription and the User is set to Active
-
-
-Flow - Login
-
-1) A user starts the application and selects login.
-2) The user is promted for a name and then a userID
-3) If these are found in the system then the user is authenticated
-4) The menu changes to the logged in menu
-5)
-
-
-Flow - Book Activity
-1) Same flow as for Login and then:
-2) The user selects book Activity from the logged in menu.
-3) A check is done that the user has a valid subscription and
-    that the membership is still in date.
-3) If checks pass then program fetches a list of available activities.
-4) The user selects an activity from the list
-5) The program fetches a list of available spaces in a room for that activity
-6) Then the user selects a space and the program checks that it is a vailable, and that the user is not allready booked.
-7) Once the user has foun an available space the room is updated with the userID
-8) Room saved to database and user is given a confirmation promt and returns to main menu.
