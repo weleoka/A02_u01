@@ -11,7 +11,7 @@ import java.util.Date;
  */
 public class SubscriptionControl {
     private static SubscriptionControl ourInstance = new SubscriptionControl();
-    private static Subscription selectedSubscription;
+    private static Subscription selectedSubscription;   // Populated with valid subscription.
 
     public static SubscriptionControl getInstance() {
         return ourInstance;

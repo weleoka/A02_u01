@@ -5,9 +5,9 @@ package WakeUp;
  * Representation of a room.
  *
  */
-public class Room {
-    private static Activity roomActivity;
-    private static int roomID;
+public class Room extends Dbitem {
+    private static Activity type;
+    private static int id;
 
     // Constructor
     Room() {
@@ -21,6 +21,7 @@ public class Room {
         return tmparr;
     }
 
+
     /**
      * Check the room and return a list of all places weather they are
      * booked or not.
@@ -33,6 +34,7 @@ public class Room {
         return tmparr;
     }
 
+
     /**
      * Check the array of places to see which ones are booked.
      *
@@ -43,6 +45,7 @@ public class Room {
 
         return tmparr;
     }
+
 
     /**
      * Set a place in the room to booked by
@@ -57,6 +60,7 @@ public class Room {
         return true;
     }
 
+
     /**
      * A string representation of a room and its places.
      *
@@ -64,6 +68,7 @@ public class Room {
      */
     @Override
     public String toString() {
-        return super.toString();
+        String s = super.toString();
+        return s;
     }
 }

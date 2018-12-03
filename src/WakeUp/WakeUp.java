@@ -56,6 +56,7 @@ public class WakeUp {
         }
     }
 
+
     /**
      * Menu displaid to a user when it is authenticated.
      *
@@ -89,12 +90,14 @@ public class WakeUp {
         }
     }
 
+
     /**
      * Steps for logging user in.
      */
     private static void loginUser() {
         loggedInMenu();
     }
+
 
     /**
      * Handles booking an activity.
@@ -103,12 +106,14 @@ public class WakeUp {
 
     }
 
+
     /**
      * Registration process for a new user.
      */
     private static void registerUser() {
 
     }
+
 
     /**
      * End the application.

@@ -7,38 +7,40 @@ skinparam {
 
 class WakeUp <<final>> {
     - userInput: java.util.Scanner
-    + main (String[] args): void
-    - mainMenu (): void
-    - loggedInMenu (): void
-    - registerUser (): void
-    - logInUser (): void
-    - bookActivity (): void
-    - quit (): void
+    + main(String[] args): void
+    - mainMenu(): void
+    - loggedInMenu(): void
+    - registerUser(): void
+    - logInUser(): void
+    - bookActivity(): void
+    - quit(): void
 }
 class WakeUpHelpers {
     + validateUserID (User): boolean
 }
 class DbItem {
-    - dbInstance (): DB
-    - fetch (): self
+    - CSV_FILE_PATH: Path
+    - writeCSVLine(): void
+    - readCSVFull(): ArrayList
+    - readCSVLine(): ArrayList
 }
 
 
 class RoomControl <<(S, #FF7700) singleton>> {
     - selectedRoom: Room
-    + getRoomActivities (): String []
-    + selectRoomByActivity (String activity): void
-    + selectRoomByRoomID (int roomID): void
-    + fetchRoomPlaces (): String[]
-    + assignUserToRoomPlace (int userID, int placeID): void
+    + getRoomActivities(): String []
+    + selectRoomByActivity(String activity): void
+    + selectRoomByRoomID(int roomID): void
+    + fetchRoomPlaces(): String[]
+    + assignUserToRoomPlace(int userID, int placeID): void
 }
 class Room <extends DbItem>{
-    - roomType: Activity
-    - roomID: int
-    + getAllPlaces (): String []
-    + getBookedPlaces (): String[]
-    + setBookedPlaces (int placeID): boolean
-    + toString (): String
+    - type: Activity
+    - id: int
+    + getAllPlaces(): String []
+    + getBookedPlaces(): String[]
+    + setBookedPlaces(int placeID): boolean
+    + toString(): String
 }
 enum Activity <<enumerate>> {
     1: SPINNING
@@ -50,21 +52,21 @@ enum Activity <<enumerate>> {
 
 class UserControl <<(S, #FF7700) singleton>> {
     - selectedUser: User
-    + createUser (String userName, String userID): boolean
-    + selectUserByUserName (String userName): void
-    + selectUserByUserID (int userID): void
-    + loginSelectedUser (): boolean
+    + createUser(String userName, String userID): boolean
+    + selectUserByUserName(String userName): void
+    + selectUserByUserID(int userID): void
+    + loginSelectedUser(): boolean
     + logoutSelectedUser(): boolean
-    + removeSelectedUser (): boolean
+    + removeSelectedUser(): boolean
 }
 class User <extends DbItem> {
-    - userName: String
-    - userID: int
+    - name: String
+    - id: int
     - userStatus: UserStatus
-    + toString (): String
-    + setActive (): void
-    + setInactive (): void
-    + setRemoved (): void
+    + toString(): String
+    + setActive(): void
+    + setInactive(): void
+    + setRemoved(): void
 }
 enum Status <<enumerate>> {
     1: ACTIVE
@@ -76,10 +78,10 @@ enum Status <<enumerate>> {
 
 class SubscriptionControl <<(S, #FF7700) singleton>> {
     - selectedSubscription: Subscription
-    + calculateCost (): double
-    + createSubscription (sDate, eDate, userID): boolean
-    + removeSelectedSubscription (): boolean
-    + selectSubscriptionByUserID (int userID): void
+    + calculateCost(): double
+    + createSubscription(sDate, eDate, userID): boolean
+    + removeSelectedSubscription(): boolean
+    + selectSubscriptionByUserID(int userID): void
     + changeSelectedSubscriptionDates(sDate, eDate): boolean
 }
 class Subscription <extends DbItem> {
@@ -87,11 +89,11 @@ class Subscription <extends DbItem> {
     - endDate: Date
     - userID: int
     - subscriptionStatus: Status
-    + setSDate (Date): void
-    + setEDate (Date): void
-    + setActive (): void
-    + setInactive (): void
-    + toString (): String
+    + setSDate(Date): void
+    + setEDate(Date): void
+    + setActive(): void
+    + setInactive(): void
+    + toString(): String
 
 }
 

@@ -27,11 +27,13 @@ public class RoomControl {
         return activitiesList;
     }
 
+
     /**
      * This sets the selected room depending on activity.
      */
     public void fetchRoomByActivity(Activity activity) {
     }
+
 
     /**
      * This sets the selected room depending on activity.
@@ -39,6 +41,7 @@ public class RoomControl {
     public void fetchRoomByRoomID(int roomID) {
 
     }
+
 
     /**
      * This will return the list of all places in a room.

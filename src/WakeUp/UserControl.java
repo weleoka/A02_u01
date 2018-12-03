@@ -2,7 +2,7 @@ package WakeUp;
 
 public class UserControl {
     private static UserControl ourInstance = new UserControl();
-    private User selectedUser = new User();
+    private User selectedUser;
 
     public static UserControl getInstance() {
         return ourInstance;
@@ -12,7 +12,7 @@ public class UserControl {
     }
 
     /**
-     *
+     * Add a new user
      *
      */
     public void addUser() {
