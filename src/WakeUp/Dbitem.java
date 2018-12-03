@@ -39,9 +39,9 @@ public abstract class Dbitem {
      * Method for writing to a CSV file.
      *
      * @param stringArray
-     * @throws Exception
+     * @throws IOException
      */
-    public void writeCSVLine(List<String[]> stringArray) throws Exception {
+    public void writeCSVLine(List<String[]> stringArray) throws IOException {
         CSVWriter writer = new CSVWriter(new FileWriter(CSV_FILE_PATH.toString()));
         for (String[] array : stringArray) {
             writer.writeNext(array);

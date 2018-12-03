@@ -2,11 +2,18 @@ package WakeUp;
 
 /**
  * Class representing a user of the system.
+ *
  */
-public class User {
+public class User extends Dbitem {
     private static String name;
-    private static String id;
+    private static int id;
     protected static Status status; // enum class Status
+
+    // Constructor for creating a new user.
+    User(String userName, int userID) {
+        this.name = userName;
+        this.id = userID;
+    }
 
     /**
      * Toggle the user status to active.

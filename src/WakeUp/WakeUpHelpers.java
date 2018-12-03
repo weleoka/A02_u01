@@ -12,7 +12,7 @@ public class WakeUpHelpers {
      *
      * It is a modulus 10 based system in the format YYMMDD-XXXX
      *
-     * The last number is the modulus
+     * The last number is the modulus check.
      *
      *
      * @param userID                a userID to check for conformity
