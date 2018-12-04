@@ -7,10 +7,14 @@ skinparam {
 
 class WakeUp <<final>> {
     - userInput: java.util.Scanner
+    - USERCONTROL: UserControl
+    - ROOMCONTROL: RoomControl
+    - SUBSCRCONTROL: SubscriptionControl
     + main(String[] args): void
     - mainMenu(): void
     - loggedInMenu(): void
-    - registerUser(): void
+    - createUser(): void
+    - createSubscription(): void
     - logInUser(): void
     - bookActivity(): void
     - quit(): void
@@ -18,9 +22,10 @@ class WakeUp <<final>> {
 class WakeUpHelpers {
     + validateUserID (User): boolean
 }
-class DbItem {
+class CSVDB {
     - CSV_FILE_PATH: Path
-    - writeCSVLine(): void
+    - writeCSVLine(String[]): void
+    - writeCSVMultiLine(List<String[]>): void
     - readCSVFull(): ArrayList
     - readCSVLine(): ArrayList
 }
@@ -34,13 +39,14 @@ class RoomControl <<(S, #FF7700) singleton>> {
     + fetchRoomPlaces(): String[]
     + assignUserToRoomPlace(int userID, int placeID): void
 }
-class Room <extends DbItem>{
+class Room {
     - type: Activity
-    - id: int
+    - id: String
     + getAllPlaces(): String []
     + getBookedPlaces(): String[]
     + setBookedPlaces(int placeID): boolean
     + toString(): String
+    + toArray(): String[]
 }
 enum Activity <<enumerate>> {
     1: SPINNING
@@ -58,15 +64,17 @@ class UserControl <<(S, #FF7700) singleton>> {
     + loginSelectedUser(): boolean
     + logoutSelectedUser(): boolean
     + removeSelectedUser(): boolean
+    + authenticatedUser(): boolean
 }
-class User <extends DbItem> {
+class User {
     - name: String
-    - id: int
+    - id: String
     - userStatus: UserStatus
-    + toString(): String
     + setActive(): void
     + setInactive(): void
     + setRemoved(): void
+    + toString(): String
+    + toArray(): String[]
 }
 enum Status <<enumerate>> {
     1: ACTIVE
@@ -84,23 +92,23 @@ class SubscriptionControl <<(S, #FF7700) singleton>> {
     + selectSubscriptionByUserID(int userID): void
     + changeSelectedSubscriptionDates(sDate, eDate): boolean
 }
-class Subscription <extends DbItem> {
+class Subscription {
     - startDate: Date
     - endDate: Date
-    - userID: int
+    - userID: String
     - subscriptionStatus: Status
     + setSDate(Date): void
     + setEDate(Date): void
     + setActive(): void
     + setInactive(): void
     + toString(): String
-
+    + toArray(): String[]
 }
 
 
 '--- Notes on Diagram ---
 note right of UserControl: If the user is authenitcated\nthen selectedUser is set.
-note "Currently UserID is an INT for development,\nbut will be a String in later implementation." as N1
+note "CSVDB is used by all the singleton \nobject control classes." as Note1
 
 
 '--- Relations ---

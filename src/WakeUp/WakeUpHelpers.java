@@ -18,7 +18,20 @@ public class WakeUpHelpers {
      * @param userID                a userID to check for conformity
      * @return boolean              true if valid userID
      */
-    public boolean validateUserID(int userID) {
+    public static boolean validateUserID(int userID) {
         return true;
+    }
+
+    /**
+     * Sleep the program for x number of miliseconds.
+     *
+     * @param mSeconds
+     */
+    public static void sleeper(int mSeconds) {
+        try {
+            Thread.sleep(mSeconds);
+        } catch (InterruptedException e){
+            System.out.println("Sleep function has been aborted.");
+        }
     }
 }

@@ -11,13 +11,6 @@ public class Subscription {
     private static int userID; // Development int. later String.
     private static Status status; // enum class Status.
 
-
-
-
-
-
-
-
     /**
      * Set the starting date.
      *
@@ -26,7 +19,6 @@ public class Subscription {
     public void setSDate(Date sDate) {
         this.sDate = sDate;
     }
-
 
     /**
      *  Set the ending date.
@@ -65,5 +57,20 @@ public class Subscription {
     public String toString() {
         String s = super.toString();
         return s;
+    }
+
+    /**
+     * Create an array representation of the object.
+     *
+     * @return tmpArr               an array of the object attributes
+     */
+    public String[] toArray() {
+        String[] tmpArr = {
+                this.sDate.toString(),
+                this.eDate.toString(),
+                this.status.toString()
+        };
+
+        return tmpArr;
     }
 }

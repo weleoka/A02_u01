@@ -5,9 +5,9 @@ package WakeUp;
  * Representation of a room.
  *
  */
-public class Room extends Dbitem {
+public class Room extends CSVDB {
     private static Activity type;
-    private static int id;
+    private static String id;
 
     // Constructor
     Room() {
@@ -70,5 +70,19 @@ public class Room extends Dbitem {
     public String toString() {
         String s = super.toString();
         return s;
+    }
+
+    /**
+     * Create an array representation of the object.
+     *
+     * @return tmpArr               an array of the object attributes
+     */
+    public String[] toArray() {
+        String[] tmpArr = {
+                this.type.toString(),
+                this.id
+        };
+
+        return tmpArr;
     }
 }
