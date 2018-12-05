@@ -13,18 +13,22 @@ import java.util.List;
  * todo: move the user to/from database logic to User class.
  */
 public class UserControl {
+    // Singleton
     private static UserControl ourInstance = new UserControl();
-
-    // Extras
-    private static CSVDB userDB;
-    private User selectedUser;
-
     public static UserControl getInstance() {
         return ourInstance;
     }
+    // Constructor
     private UserControl() {
         this.userDB = new CSVDB("./userDB.csv");
     }
+    // Fields declared
+    private static CSVDB userDB;
+    private User selectedUser;  // holds the user object that is subject to operations.
+    private User authenticatedUser; // holds a reference to the user object if isAuthenticated.
+
+
+
 
     /**
      * Read from storage and find a user by user name.
@@ -33,46 +37,82 @@ public class UserControl {
      *
      * @param userName              a String of the name too look for
      */
-    public void selectUserByName(String userName) {
+    public boolean selectUserByName(String userName) {
         List<String[]> userList = this.userDB.readCSVFull();
 
         for (String[] userArr : userList) {
+
             if (userName == userArr[0]) {
                 this.selectedUser = new User(userArr);
+
+                return true;
             }
         }
+
+        return false;
     }
 
     /**
      * Read from storage and find a user by user id.
      *
-     * If found in then set selectedUser to relevant instance.
+     * If found in DB then set selectedUser to relevant instance.
      *
      * @param userID                a String of the users id to look for
      */
-    public void selectUserByUserID(String userID) {
+    public boolean selectUserByUserID(String userID) {
         List<String[]> userList = this.userDB.readCSVFull();
 
         for (String[] userArr : userList) {
+
             if (userID == userArr[1]) {
                 this.selectedUser = new User(userArr);
+
+                return true;
             }
+        }
+
+        return false;
+    }
+
+
+
+
+    /**
+     * Checks if authenticatedUser is set and returns result
+     *
+     * @return boolean              true if user is set and thus logged in
+     */
+    public boolean isAuthenticatedUser () {
+
+        if (this.authenticatedUser instanceof User) {
+
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * setAuthenticated
+     *
+     * The selectedUser variable should already be set before this method is called.
+     * This method implements a check that the supplied UserID matches the stored selectedUser.id.
+     */
+    public void loginSelectedUser(String userID) {
+        if (userID == this.selectedUser.getSelectedUserID()) {
+            this.authenticatedUser = this.selectedUser;
         }
     }
 
     /**
-     *
-     */
-    private void loginSelectedUser() {
-
-    }
-
-    /**
-     *
+     * set authenticatedUser to null.
      */
     public void logoutSelectedUser() {
-
+        this.authenticatedUser = null;
     }
+
+
+
 
     /**
      * Create a new user.
@@ -92,19 +132,8 @@ public class UserControl {
     /**
      * Remove a user.
      */
-    public void removeUser() {
+    public boolean removeSelectedUser() {
         this.selectedUser.setRemoved();
-    }
-
-    /**
-     * Checks if selectedUSer is set and returns result
-     *
-     * @return boolean              true if user is set and thus logged in
-     */
-    public boolean authenticatedUser () {
-        if (this.selectedUser instanceof User) {
-            return true;
-        }
-        return false;
+        return true;
     }
 }

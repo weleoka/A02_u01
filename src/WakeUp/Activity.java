@@ -4,9 +4,10 @@ package WakeUp;
  * Different available activities.
  */
 public enum Activity {
-    SPINNING("Spinning"),
-    AEROBICS("Aerobics"),
-    YOGA("Yoga");
+    SPINNING        ("Spinning"),
+    AEROBICS        ("Aerobics"),
+    YOGA            ("Yoga"),
+    UNASSIGNED      ("Unassigned");
 
     private final String name;
 
@@ -14,9 +15,10 @@ public enum Activity {
         this.name = name;
     }
 
-    //Override för att skriva ut enum med små bokstäver.
+    // Override to print pretty name.
     @Override
     public String toString() {
-        return this.name;
+        final String name = this.name;
+        return name;
     }
 }

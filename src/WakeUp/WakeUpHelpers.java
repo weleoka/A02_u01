@@ -18,7 +18,7 @@ public class WakeUpHelpers {
      * @param userID                a userID to check for conformity
      * @return boolean              true if valid userID
      */
-    public static boolean validateUserID(int userID) {
+    public static boolean validateUserID(String userID) {
         return true;
     }
 

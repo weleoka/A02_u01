@@ -9,6 +9,7 @@ import java.util.*;
 import com.opencsv.*;
 
 
+
 /**
  * Class used to read and write from a CSV file.
  *
@@ -41,11 +42,12 @@ public class CSVDB {
     public void writeCSVLine(String[] array) {
 
         try {
-            CSVWriter writer = new CSVWriter(new FileWriter(CSV_FILE_PATH.toString()));
+            FileWriter mFileWriter = new FileWriter(CSV_FILE_PATH.toString(), true);
+            CSVWriter writer = new CSVWriter(mFileWriter);
             writer.writeNext(array);
             writer.close();
-        }
-        catch (IOException e) {
+
+        } catch (IOException e) {
             System.out.println("This is an error. The path does not contain a valid CSV file.");
             System.out.println(e);
         }
@@ -60,12 +62,13 @@ public class CSVDB {
 
         try {
             CSVWriter writer = new CSVWriter(new FileWriter(CSV_FILE_PATH.toString()));
+
             for (String[] array : stringArray) {
                 writer.writeNext(array);
             }
             writer.close();
-        }
-        catch (IOException e) {
+
+        } catch (IOException e) {
             System.out.println("This is an error. The path does not contain a valid CSV file.");
             System.out.println(e);
         }
@@ -104,12 +107,12 @@ public class CSVDB {
         } catch (IOException e) {
             System.out.println("This is an error. The path does not contain a valid CSV file.");
             System.out.println(e);
+
             return fullRecord;
         }
 
         return fullRecord;
     }
-
 
     /**
      * Helper method to print array for checking items.
@@ -117,37 +120,23 @@ public class CSVDB {
      * @param nextRecord
      */
     private void debugCheck(String[] nextRecord) {
-        System.out.println("Name : " + nextRecord[0]);
-        System.out.println("Email : " + nextRecord[1]);
-        System.out.println("Phone : " + nextRecord[2]);
-        System.out.println("Country : " + nextRecord[3]);
-        System.out.println("==========================");
-    }
 
+        for ( String part : nextRecord) {
 
-    /**
-     * Read data from a CSV file Method #2
-     *
-     * todo: Specify sepperator etc.
-     *
-     * @param
-     * @throws IOException
-     */
-    public void readData2() throws IOException {
-        try (
-                Reader reader = Files.newBufferedReader(Paths.get(CSV_FILE_PATH.toString()));
-                CSVReader csvReader = new CSVReader(reader);
-        ) {
-            // Reading Records One by One in a String array
-            String[] nextRecord;
-            while ((nextRecord = csvReader.readNext()) != null) {
-                System.out.println("Name : " + nextRecord[0]);
-                System.out.println("Email : " + nextRecord[1]);
-                System.out.println("Phone : " + nextRecord[2]);
-                System.out.println("Country : " + nextRecord[3]);
-                System.out.println("==========================");
+            try {
+                System.out.println(part);
+
+            } catch (ArrayIndexOutOfBoundsException e) {
+
+                return;
             }
         }
+        System.out.println("==========================");
+
+        /*System.out.println("Namn : " + nextRecord[0]);
+        System.out.println("userID : " + nextRecord[1]);
+        System.out.println("Status : " + nextRecord[2]);
+        System.out.println("==========================");*/
     }
 }
 

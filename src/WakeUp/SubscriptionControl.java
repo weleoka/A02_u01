@@ -10,16 +10,16 @@ import java.util.Date;
  * which is fetched from storage by argument to method call.
  */
 public class SubscriptionControl {
+    // Singleton
     private static SubscriptionControl ourInstance = new SubscriptionControl();
-    private static Subscription selectedSubscription;   // Populated with valid subscription.
-
     public static SubscriptionControl getInstance() {
         return ourInstance;
     }
-
+    // Constructor
     private SubscriptionControl() {
     }
-
+    // Fields declared
+    private static Subscription selectedSubscription;   // Populated with valid subscription.
 
     /**
      * Calculates the cost of a subscription.
@@ -34,7 +34,6 @@ public class SubscriptionControl {
         return priceTotal;
     }
 
-
     /**
      * A subscription needs a start timestamp and an end timestamp.
      * Also a user ID has to be attached to it.
@@ -47,7 +46,6 @@ public class SubscriptionControl {
 
     }
 
-
     /**
      * Remove subscription
      * Sets the status to removed.
@@ -55,7 +53,6 @@ public class SubscriptionControl {
     public void removeSelectedSubscription() {
 
     }
-
 
     /**
      * Fetch a Subscription from storage by userID
@@ -65,7 +62,6 @@ public class SubscriptionControl {
     public Subscription selectSubscriptionByUserId(int userID) {
         return this.selectedSubscription;
     }
-
 
     /**
      * A subscription can be changed by setting a different

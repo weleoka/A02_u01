@@ -22,9 +22,10 @@ public enum Status {
         this.name = name;
     }
 
-    //Override för att skriva ut enum med små bokstäver.
+    // Override to print name.
     @Override
     public String toString(){
-        return this.name;
+        final String name = this.name;
+        return name;
     }
 }

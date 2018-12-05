@@ -13,6 +13,7 @@ class WakeUp <<final>> {
     + main(String[] args): void
     - mainMenu(): void
     - loggedInMenu(): void
+    - credentialsPrompt(): String[]
     - createUser(): void
     - createSubscription(): void
     - logInUser(): void
@@ -34,8 +35,8 @@ class CSVDB {
 class RoomControl <<(S, #FF7700) singleton>> {
     - selectedRoom: Room
     + getRoomActivities(): String []
-    + selectRoomByActivity(String activity): void
-    + selectRoomByRoomID(int roomID): void
+    + selectRoomByActivity(String activity): boolean
+    + selectRoomByRoomID(int roomID): boolean
     + fetchRoomPlaces(): String[]
     + assignUserToRoomPlace(int userID, int placeID): void
 }
@@ -58,13 +59,14 @@ enum Activity <<enumerate>> {
 
 class UserControl <<(S, #FF7700) singleton>> {
     - selectedUser: User
+    - authenticatedUser: User
     + createUser(String userName, String userID): boolean
-    + selectUserByUserName(String userName): void
-    + selectUserByUserID(int userID): void
+    + selectUserByUserName(String userName): boolean
+    + selectUserByUserID(int userID): boolean
     + loginSelectedUser(): boolean
     + logoutSelectedUser(): boolean
     + removeSelectedUser(): boolean
-    + authenticatedUser(): boolean
+    + isAuthenticatedUser(): boolean
 }
 class User {
     - name: String
