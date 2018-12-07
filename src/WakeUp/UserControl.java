@@ -42,7 +42,7 @@ public class UserControl {
 
         for (String[] userArr : userList) {
 
-            if (userName == userArr[0]) {
+            if (userName.equalsIgnoreCase(userArr[0])) {
                 this.selectedUser = new User(userArr);
 
                 return true;
@@ -98,10 +98,15 @@ public class UserControl {
      * The selectedUser variable should already be set before this method is called.
      * This method implements a check that the supplied UserID matches the stored selectedUser.id.
      */
-    public void loginSelectedUser(String userID) {
-        if (userID == this.selectedUser.getSelectedUserID()) {
+    public boolean loginSelectedUser(String userID) {
+        //System.out.printf("'%s' VS '%s'", userID, this.selectedUser.getSelectedUserID()); //debug line.
+        if (userID.equalsIgnoreCase(this.selectedUser.getSelectedUserID())) {
             this.authenticatedUser = this.selectedUser;
+
+            return true;
         }
+
+        return false;
     }
 
     /**

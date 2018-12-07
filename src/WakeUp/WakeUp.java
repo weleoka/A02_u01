@@ -55,16 +55,22 @@ public class WakeUp {
                 switch (selection) {
 
                     case 1:
-                        loginUser();
-                        break inputLoop;
+                        if (loginUser()) {
+                            out.println(UI_strings.successfullLogin);
+                            loggedInMenu();
+                            break inputLoop;
+                        } else {
+                            out.println(UI_strings.unsuccessfullLogin);
+                            continue;
+                        }
 
                     case 2:
                         createUser();
                         break inputLoop;
 
-                    case 3:
+                    /*case 3:
                         generateDefaultRooms();
-                        break inputLoop;
+                        break inputLoop;*/
 
                     case 9:
                         quit();
@@ -73,8 +79,8 @@ public class WakeUp {
 
             } else {
                 out.println(UI_strings.menuSelectionFailed);
-                userInput.next(); // flush the in buffer
             }
+            userInput.next(); // flush the in buffer
         }
     }
 
@@ -145,21 +151,37 @@ public class WakeUp {
     /**
      * Steps for logging user in.
      *
-     * todo: user is not found in database. Some sort of comparison mismatch.
+     * @return boolean
      */
-    private static void loginUser() {
+    private static boolean loginUser() {
         String[] creds = credentialsPrompt();
 
-        if (USERCONTROL.selectUserByName(creds[0])) {
+        if (USERCONTROL.selectUserByName(creds[0])) {   // Find user in the db.
             out.println(UI_strings.userNameFound);
 
-            if (WakeUpHelpers.validateUserID(creds[1])) {
-                USERCONTROL.loginSelectedUser(creds[1]);    // pass the supplied userID to ensure match.
-                loggedInMenu();
+            if (WakeUpHelpers.validateUserID(creds[1])) {   // Test validity of supplied ID.
+                out.println(UI_strings.userIDValid);
+
+                if (USERCONTROL.loginSelectedUser(creds[1])) {    // Test ID and name pair for match in db.
+
+                    return true;
+
+                } else {
+                    out.println(UI_strings.userNameToIDMissmatch);
+
+                    return false;
+                }
+
+            } else {
+                out.println(UI_strings.userIDInvalid);
+
+                return false;
             }
 
         } else {
             out.println(UI_strings.userNameNotFound);
+
+            return false;
         }
 
     }
@@ -169,6 +191,7 @@ public class WakeUp {
      */
     private static void logoutUser() {
         USERCONTROL.logoutSelectedUser();
+        out.println(UI_strings.logoutSuccessfull);
         mainMenu();
     }
 
@@ -181,17 +204,25 @@ public class WakeUp {
      *
      * todo: make the selections print loop exterior from while loop.
      * todo: catch error if instantiating non-valid activity ENUM.
+     * try {
+     *     this.url = new URL(url);
+     * }
+     * catch(MalformedURLException e) {
+     *     throw new AssertionError(e);
+     * }
      */
     private static void bookActivity() {
         int i = 0;
         int selection = 0;
+        String output = "";
         String [] activities = ROOMCONTROL.getRoomActivities();
 
-        inputLoop: while (true) {
+        for (i = 0; i <= activities.length - 1; i++) {
+            output += String.format("\n%s: %s", (i + 1), activities[i]);
+        }
 
-            for (i = 0; i <= activities.length - 1; i++) {
-                out.printf("\n%s: %s", (i + 1), activities[i]);
-            }
+        inputLoop: while (true) {
+            out.println(output);
 
             if (userInput.hasNextInt()) {
                 selection = userInput.nextInt();
@@ -252,6 +283,7 @@ public class WakeUp {
      * End the application.
      */
     private static void quit() {
+        out.println(UI_strings.goodbyeString);
         System.exit(0);
     }
 }
@@ -266,13 +298,14 @@ class UI_strings {
     // Menus and selection
     public static String menuSelectionFailed = "Ogiltigt alternativ";
     public static String menuHeader = "\n - - - WakeUP Gym - - -";
-    public static String mainMenuAlternatives = "\nVälkommen!\n1.Logga in\n2.Registrera Användare\n9.Avsluta";
-    public static String loggedInMenuAlternatives = "\nVälkommen!\n1.Boka plats på aktivitet\n9.Logga ut";
+    public static String mainMenuAlternatives = "\n1.Logga in\n2.Registrera Användare\n9.Avsluta";
+    public static String loggedInMenuAlternatives = "\n1.Boka plats på aktivitet\n9.Logga ut";
     public static String makeSelectionPrompt = "\n\nVar god välj ett alternativ:";
     public static String mainMenu = menuHeader + mainMenuAlternatives + makeSelectionPrompt;
     public static String loggedInMenu = menuHeader + loggedInMenuAlternatives + makeSelectionPrompt;
+    public static String goodbyeString = "\n\nHej då, och tack för besöket.";
     
-    // User creation and authorisation
+    // User creation
     public static String createUserHeader = "--> Skapa Ny Användare";
     public static String promptUserName = "Skriv användarnamn:";
     public static String promptUserID = "Skriv användar id:";
@@ -280,9 +313,19 @@ class UI_strings {
     public static String userIDExists = "Användarens ID finns redan.";
     public static String createUserSuccess = "Användaren skapades.";
     public static String createUserFail = "Något gick fel. Försök igen.";
+
+    // User authorisation
     public static String userNotAuthenticated = "Ej inloggad.";
     public static String userNameFound = "Användaren hittades i databasen.";
     public static String userNameNotFound = "Användaren hittades inte i databasen.";
+    public static String userIDValid = "Användarens ID är giltigt.";
+    public static String userIDInvalid = "Användarens ID är ogiltigt.";
+    public static String userNameToIDMissmatch = "Användarens Namn och ID är inte ett giltigt par.";
+    public static String successfullLogin = "Log-in lyckades. Välkommen.";
+    public static String unsuccessfullLogin = "Log-in misslyckades. Försök igen.";
+    public static String logoutSuccessfull = "Du är nu utloggad.";
+
+
 
 
     // Activity booking

@@ -109,7 +109,7 @@ class Subscription {
 
 
 '--- Notes on Diagram ---
-note right of UserControl: If the user is authenitcated\nthen selectedUser is set.
+'note right of UserControl: If the user is authenitcated\nthen authorUser is set.
 note "CSVDB is used by all the singleton \nobject control classes." as Note1
 
 

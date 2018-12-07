@@ -78,6 +78,8 @@ public class CSVDB {
      * Reading a full CSV file.
      *
      * Preferred method for reading a full CSV file of entries.
+     * todo: possibly count number of lines in CSV file for prebuilding array.
+     * todo: java.nio.file.NoSuchFileException: ./userDB.csv catch it.
      *
      * @returns fullRecord              an ArrayList of all the lines in the CSV file
      */
