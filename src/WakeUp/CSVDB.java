@@ -23,14 +23,16 @@ import com.opencsv.*;
  * todo: implement Beans for object storage and retrieval.
  * todo: make DRY the IOException handling by testing CSV in constructor.
  */
-public class CSVDB {
+public class CSVDB
+{
     private Path CSV_FILE_PATH =  Paths.get("csvFile.csv"); // default setting
 
     // Constructor default with no path.
     CSVDB() {}
 
     // Constructor with path.
-    CSVDB(String pathString) {
+    CSVDB(String pathString)
+    {
         this.CSV_FILE_PATH = Paths.get(pathString);
     }
 
@@ -39,7 +41,8 @@ public class CSVDB {
      *
      * @param array                     a String[] of data values to write to a CSV file
      */
-    public void writeCSVLine(String[] array) {
+    public void writeCSVLine(String[] array)
+    {
 
         try {
             FileWriter mFileWriter = new FileWriter(CSV_FILE_PATH.toString(), true);
@@ -47,7 +50,10 @@ public class CSVDB {
             writer.writeNext(array);
             writer.close();
 
-        } catch (IOException e) {
+        }
+
+        catch (IOException e)
+        {
             System.out.println("This is an error. The path does not contain a valid CSV file.");
             System.out.println(e);
         }
@@ -58,17 +64,22 @@ public class CSVDB {
      *
      * @param stringArray               an List of arrays to write to CSV file
      */
-    public void writeCSVMultiLine(List<String[]> stringArray) {
+    public void writeCSVMultiLine(List<String[]> stringArray)
+    {
 
         try {
             CSVWriter writer = new CSVWriter(new FileWriter(CSV_FILE_PATH.toString()));
 
-            for (String[] array : stringArray) {
+            for (String[] array : stringArray)
+            {
                 writer.writeNext(array);
             }
             writer.close();
 
-        } catch (IOException e) {
+        }
+
+        catch (IOException e)
+        {
             System.out.println("This is an error. The path does not contain a valid CSV file.");
             System.out.println(e);
         }
@@ -83,11 +94,13 @@ public class CSVDB {
      *
      * @returns fullRecord              an ArrayList of all the lines in the CSV file
      */
-    public List<String[]> readCSVFull() {
+    public List<String[]> readCSVFull()
+    {
         List<String[]> fullRecord = new ArrayList<>();
         String[] nextRecord;
 
-        try {
+        try
+        {
             Reader reader = Files.newBufferedReader(Paths.get(CSV_FILE_PATH.toString()));
 
             CSVParser parser = new CSVParserBuilder()
@@ -100,13 +113,16 @@ public class CSVDB {
                     .withCSVParser(parser)
                     .build();
 
-            while ((nextRecord = csvReader.readNext()) != null) {
+            while ((nextRecord = csvReader.readNext()) != null)
+            {
                 debugCheck(nextRecord);
                 fullRecord.add(nextRecord);
             }
             reader.close(); // Close reader to prevent memory leaks.
 
-        } catch (IOException e) {
+        }
+        catch (IOException e)
+        {
             System.out.println("This is an error. The path does not contain a valid CSV file.");
             System.out.println(e);
 
@@ -121,14 +137,20 @@ public class CSVDB {
      *
      * @param nextRecord
      */
-    private void debugCheck(String[] nextRecord) {
+    private void debugCheck(String[] nextRecord)
+    {
 
-        for ( String part : nextRecord) {
+        for ( String part : nextRecord)
+        {
 
-            try {
+            try
+            {
                 System.out.println(part);
 
-            } catch (ArrayIndexOutOfBoundsException e) {
+            }
+
+            catch (ArrayIndexOutOfBoundsException e)
+            {
 
                 return;
             }

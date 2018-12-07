@@ -26,7 +26,8 @@ public class WakeUp {
      *
      * @param args
      */
-    public static void main(String args[]) {
+    public static void main(String args[])
+    {
         mainMenu();
     }
 
@@ -43,10 +44,12 @@ public class WakeUp {
      *
      * todo: test the inputLoop breaking and what happens to following switch cases.
      */
-    private static void mainMenu() {
+    private static void mainMenu()
+    {
         int selection = 0;
 
-        inputLoop: while (true) {
+        inputLoop: while (true)
+        {
             out.println(UI_strings.mainMenu);
 
             if (userInput.hasNextInt()) {
@@ -55,11 +58,15 @@ public class WakeUp {
                 switch (selection) {
 
                     case 1:
-                        if (loginUser()) {
+                        if (loginUser())
+                        {
                             out.println(UI_strings.successfullLogin);
                             loggedInMenu();
                             break inputLoop;
-                        } else {
+                        }
+
+                        else
+                        {
                             out.println(UI_strings.unsuccessfullLogin);
                             continue;
                         }
@@ -77,7 +84,10 @@ public class WakeUp {
                         break inputLoop;
                 }
 
-            } else {
+            }
+
+            else
+            {
                 out.println(UI_strings.menuSelectionFailed);
             }
             userInput.next(); // flush the in buffer
@@ -93,7 +103,8 @@ public class WakeUp {
      * 9. Return to Main Menu
      *
      */
-    private static void loggedInMenu() {
+    private static void loggedInMenu()
+    {
         int selection = 0;
 
         if (!USERCONTROL.isAuthenticatedUser()) {
@@ -101,13 +112,15 @@ public class WakeUp {
             mainMenu();
         }
 
-        inputLoop: while (true) {
+        inputLoop: while (true)
+        {
             out.println(UI_strings.loggedInMenu);
 
             if (userInput.hasNextInt()) {
                 selection = userInput.nextInt();
 
-                switch (selection) {
+                switch (selection)
+                {
 
                     case 1:
                         bookActivity();
@@ -122,7 +135,10 @@ public class WakeUp {
                         break inputLoop;
                 }
 
-            } else {
+            }
+
+            else
+            {
                 System.out.println(UI_strings.menuSelectionFailed);
                 userInput.next(); // flush the in buffer
             }
@@ -134,7 +150,8 @@ public class WakeUp {
      *
      * @returns credentials             an array of name and password pair
      */
-    private static String[] credentialsPrompt() {
+    private static String[] credentialsPrompt()
+    {
         userInput.nextLine(); // flush the input buffer
         out.println(UI_strings.promptUserName);
         String userName = userInput.nextLine(); // To accept whitespace.
@@ -153,32 +170,45 @@ public class WakeUp {
      *
      * @return boolean
      */
-    private static boolean loginUser() {
+    private static boolean loginUser()
+    {
         String[] creds = credentialsPrompt();
 
-        if (USERCONTROL.selectUserByName(creds[0])) {   // Find user in the db.
+        if (USERCONTROL.selectUserByName(creds[0])) // Find user in the db.
+        {
             out.println(UI_strings.userNameFound);
 
-            if (WakeUpHelpers.validateUserID(creds[1])) {   // Test validity of supplied ID.
+            if (WakeUpHelpers.validateUserID(creds[1])) // Test validity of supplied ID.
+            {
                 out.println(UI_strings.userIDValid);
 
-                if (USERCONTROL.loginSelectedUser(creds[1])) {    // Test ID and name pair for match in db.
+                if (USERCONTROL.loginSelectedUser(creds[1]))
+                {    // Test ID and name pair for match in db.
 
                     return true;
 
-                } else {
+                }
+
+                else
+                {
                     out.println(UI_strings.userNameToIDMissmatch);
 
                     return false;
                 }
 
-            } else {
+            }
+
+            else
+            {
                 out.println(UI_strings.userIDInvalid);
 
                 return false;
             }
 
-        } else {
+        }
+
+        else
+        {
             out.println(UI_strings.userNameNotFound);
 
             return false;
@@ -189,7 +219,8 @@ public class WakeUp {
     /**
      * Steps for logging user out.
      */
-    private static void logoutUser() {
+    private static void logoutUser()
+    {
         USERCONTROL.logoutSelectedUser();
         out.println(UI_strings.logoutSuccessfull);
         mainMenu();
@@ -202,8 +233,8 @@ public class WakeUp {
      * Handles booking an activity.
      * Requires a loged in user.
      *
-     * todo: make the selections print loop exterior from while loop.
      * todo: catch error if instantiating non-valid activity ENUM.
+     *  - Seems to require an explicit throwing of an exception.
      * try {
      *     this.url = new URL(url);
      * }
@@ -211,32 +242,44 @@ public class WakeUp {
      *     throw new AssertionError(e);
      * }
      */
-    private static void bookActivity() {
+    private static void bookActivity()
+    {
         int i = 0;
         int selection = 0;
         String output = "";
         String [] activities = ROOMCONTROL.getRoomActivities();
 
-        for (i = 0; i <= activities.length - 1; i++) {
+        // Render the menu selections outside of the input loop.
+        for (i = 0; i <= activities.length - 1; i++)
+        {
             output += String.format("\n%s: %s", (i + 1), activities[i]);
         }
 
-        inputLoop: while (true) {
-            out.println(output);
+        inputLoop: while (true)
+        {
+            out.println(output);    // Print the possible options.
 
-            if (userInput.hasNextInt()) {
+            if (userInput.hasNextInt())
+            {
                 selection = userInput.nextInt();
 
-                try {
+                try
+                {
                     ROOMCONTROL.selectRoomByActivity(activities[selection - 1]);
 
-                } catch (IOError e) {   // big fat enum error here
+                }
+
+                catch (IOError e)
+                {   // big fat enum error here
                     out.println(UI_strings.noSuchActivity);
 
                     continue;
                 }
 
-            } else {
+            }
+
+            else
+            {
                 System.out.println(UI_strings.menuSelectionFailed);
                 userInput.next(); // flush the in buffer.
             }
@@ -249,14 +292,19 @@ public class WakeUp {
     /**
      * Registration process for a new user.
      */
-    private static void createUser() {
+    private static void createUser()
+    {
         out.println(UI_strings.createUserHeader);
         String[] creds = credentialsPrompt();
 
-        if (USERCONTROL.createUser(creds[0], creds[1])) {
+        if (USERCONTROL.createUser(creds[0], creds[1]))
+        {
             out.println(UI_strings.createUserSuccess);
 
-        } else {
+        }
+
+        else
+        {
             out.println(UI_strings.createUserFail);
         }
         WakeUpHelpers.sleeper(1000);
@@ -268,21 +316,24 @@ public class WakeUp {
      * Create a new subscription.
      * Requires a logged in user.
      */
-    private static void createSubscription() {
+    private static void createSubscription()
+    {
 
     }
 
     /**
      * Create and save to database default rooms.
      */
-    private static void generateDefaultRooms() {
+    private static void generateDefaultRooms()
+    {
         ROOMCONTROL.generateDefaultRooms();
     }
 
     /**
      * End the application.
      */
-    private static void quit() {
+    private static void quit()
+    {
         out.println(UI_strings.goodbyeString);
         System.exit(0);
     }
@@ -294,7 +345,8 @@ public class WakeUp {
 /**
  * Language specific strings for usage in WakeUP Gym UI class
  */
-class UI_strings {
+class UI_strings
+{
     // Menus and selection
     public static String menuSelectionFailed = "Ogiltigt alternativ";
     public static String menuHeader = "\n - - - WakeUP Gym - - -";

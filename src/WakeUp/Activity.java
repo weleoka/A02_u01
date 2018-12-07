@@ -3,7 +3,8 @@ package WakeUp;
 /**
  * Different available activities.
  */
-public enum Activity {
+public enum Activity
+{
     SPINNING        ("Spinning"),
     AEROBICS        ("Aerobics"),
     YOGA            ("Yoga"),
@@ -11,13 +12,15 @@ public enum Activity {
 
     private final String name;
 
-    Activity(String name) {
+    Activity(String name)
+    {
         this.name = name;
     }
 
     // Override to print pretty name.
     @Override
-    public String toString() {
+    public String toString()
+    {
         final String name = this.name;
         return name;
     }

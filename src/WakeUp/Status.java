@@ -18,13 +18,15 @@ public enum Status {
     private final String name;
 
     // Constructor
-    Status(String name) {
+    Status(String name)
+    {
         this.name = name;
     }
 
     // Override to print name.
     @Override
-    public String toString(){
+    public String toString()
+    {
         final String name = this.name;
         return name;
     }

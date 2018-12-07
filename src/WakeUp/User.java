@@ -29,36 +29,45 @@ public class User extends CSVDB {
     /**
      * Toggle the user status to active.
      */
-    public void setActive() {
+    public void setActive()
+    {
         this.status = status.ACTIVE;
     }
 
     /**
      * Toggle the user status to inactive.
      */
-    public void setInactive() {
+    public void setInactive()
+    {
         this.status = status.INACTIVE;
     }
 
     /**
      * Toggle the user status to removed.
      */
-    public void setRemoved() {
+    public void setRemoved()
+    {
         this.status = status.REMOVED;
     }
 
 
 
 
-    public String getSelectedUserID() {
+    public String getSelectedUserID()
+    {
+
         return this.id;
     }
 
-    public String getSelectedUserName() {
+    public String getSelectedUserName()
+    {
+
         return this.name;
     }
 
-    public String getSelectedUserStatus() {
+    public String getSelectedUserStatus()
+    {
+
         return this.status.toString();
     }
 
@@ -70,9 +79,11 @@ public class User extends CSVDB {
      *
      * @param sta               a String of the status to set
      */
-    private void setStatus(String sta) {
+    private void setStatus(String sta)
+    {
 
-        switch (sta.toLowerCase()) {
+        switch (sta.toLowerCase())
+        {
             case "active":
                 this.status = status.ACTIVE;
                 break;
@@ -94,8 +105,10 @@ public class User extends CSVDB {
      * toString override
      */
     @Override
-    public String toString() {
+    public String toString()
+    {
         String s = super.toString();
+
         return s;
     }
 
@@ -104,7 +117,8 @@ public class User extends CSVDB {
      *
      * @return tmpArr               an array of the object attributes
      */
-    public String[] toArray() {
+    public String[] toArray()
+    {
         String[] tmpArr = {
                 this.name,
                 this.id,

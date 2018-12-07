@@ -5,9 +5,10 @@ package WakeUp;
  *
  */
 public class Room extends CSVDB {
+    // Fields declared
     private static Activity activity;
     private static String id;
-    private String[] roomPlaces;
+    private String[][] roomPlaces;
     // Default empty constructor.
     Room() {}
     // Constructor for creating a new Room.
@@ -22,7 +23,7 @@ public class Room extends CSVDB {
     Room(String[] roomArr) {
         this.id = roomArr[0];
         this.setActivity(roomArr[1]);
-        String[] roomPlaces = this.generatePlaces();
+        String[][] roomPlaces = this.generatePlaces();
     }
 
 
@@ -33,9 +34,11 @@ public class Room extends CSVDB {
      *
      * @param act
      */
-    private void setActivity(String act) {
+    private void setActivity(String act)
+    {
 
-        switch (act.toLowerCase()) {
+        switch (act.toLowerCase())
+        {
             case "spinning":
                 this.activity = activity.SPINNING;
 
@@ -65,8 +68,10 @@ public class Room extends CSVDB {
      *
      * @return activities               a List object of activity types
      */
-    public static void getActivities() {
+    public Activity getActivity()
+    {
 
+        return this.activity;
     }
 
 
@@ -80,17 +85,21 @@ public class Room extends CSVDB {
      *
      * @return roomPlaces               an Array of all the places in a room
      */
-    public static String[] generatePlaces() {
-        String[] tmpArr = {};
+    public static String[][] generatePlaces()
+    {
+        String[][] tmpArr = new String[3][4];
+
         return tmpArr;
     }
+
     /**
      * Check the room and return a list of all places weather they are
      * booked or not.
      *
      * @return allPlaces            an array of all places
      */
-    public String[] getAllPlaces() {
+    public String[] getAllPlaces()
+    {
         String[] tmparr = {};
 
         return tmparr;
@@ -101,7 +110,8 @@ public class Room extends CSVDB {
      *
      * @return bookedPlaces         an array of booked places
      */
-    public String[] getBookedPlaces() {
+    public String[] getBookedPlaces()
+    {
         String[] tmparr = {};
 
         return tmparr;
@@ -119,7 +129,9 @@ public class Room extends CSVDB {
      *
      * @return boolean              true if successful
      */
-    public boolean setBookedPlace(int placeID, int userID) {
+    public boolean setBookedPlace(int placeID, int userID)
+    {
+
         return true;
     }
 
@@ -129,20 +141,37 @@ public class Room extends CSVDB {
     /**
      * A string representation of a room and its places.
      *
+     * todo: remove the last trailing newline character before returning.
+     *
      * @return String               String representation of a room
      */
     @Override
-    public String toString() {
-        String s = super.toString();
-        return s;
+    public String toString()
+    {
+        String output = "";
+
+        for (int row = 0; row < this.roomPlaces.length; row++)
+        {
+
+            for (int column = 0; column < this.roomPlaces[row].length; column++)
+            {
+                output += String.format("%s ", this.roomPlaces[row][column]);
+            }
+            output += String.format("\n");
+        }
+
+        return output;
     }
+
+
 
     /**
      * Create an array representation of the object.
      *
      * @return tmpArr               an array of the object attributes
      */
-    public String[] toArray() {
+    public String[] toArray()
+    {
         String[] tmpArr = {
                 this.activity.toString(),
                 this.id

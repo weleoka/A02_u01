@@ -1,7 +1,7 @@
-# A02_u01
+module name: A02_u01
 
 
-Assignment02_WakeUpGym
+# Assignment02_WakeUpGym
 
 
 Java application that works towards a CSV database for persistance.
@@ -10,13 +10,11 @@ The purpose of the work is to learn basic Java and java best practices. The work
 
 TODO: remove the current *.jar dependency files as included in src in this repository. Bring dependencies in dynamically for forks and clones of this repo.
 
+### Style guide
+This project conforms to the following [style guide](https://github.com/weleoka/myJavaStyleGuide).
 
 
 ### UML diagram
-
-
-
-
 ![ . . . ](UML_A2.png)
 
 

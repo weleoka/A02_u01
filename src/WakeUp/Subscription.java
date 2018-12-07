@@ -16,7 +16,8 @@ public class Subscription {
      *
      * @param sDate             a timestamp for start
      */
-    public void setSDate(Date sDate) {
+    public void setSDate(Date sDate)
+    {
         this.sDate = sDate;
     }
 
@@ -25,28 +26,32 @@ public class Subscription {
      *
      * @param eDate             a timestamp for end
      */
-    public void setEDate(Date eDate) {
+    public void setEDate(Date eDate)
+    {
         this.eDate = eDate;
     }
 
     /**
      * Toggle to active.
      */
-    public void setActive() {
+    public void setActive()
+    {
         this.status = status.ACTIVE;
     }
 
     /**
      * Toggle to active.
      */
-    public void setInactive() {
+    public void setInactive()
+    {
         this.status = status.INACTIVE;
     }
 
     /**
      * Toogle to removed.
      */
-    public void setRemoved() {
+    public void setRemoved()
+    {
         this.status = status.REMOVED;
     }
 
@@ -54,8 +59,10 @@ public class Subscription {
      * toString override
      */
     @Override
-    public String toString() {
+    public String toString()
+    {
         String s = super.toString();
+
         return s;
     }
 
@@ -64,7 +71,8 @@ public class Subscription {
      *
      * @return tmpArr               an array of the object attributes
      */
-    public String[] toArray() {
+    public String[] toArray()
+    {
         String[] tmpArr = {
                 this.sDate.toString(),
                 this.eDate.toString(),

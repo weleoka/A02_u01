@@ -12,11 +12,14 @@ import java.util.Date;
 public class SubscriptionControl {
     // Singleton
     private static SubscriptionControl ourInstance = new SubscriptionControl();
-    public static SubscriptionControl getInstance() {
+    public static SubscriptionControl getInstance()
+    {
+
         return ourInstance;
     }
     // Constructor
-    private SubscriptionControl() {
+    private SubscriptionControl()
+    {
     }
     // Fields declared
     private static Subscription selectedSubscription;   // Populated with valid subscription.
@@ -28,7 +31,8 @@ public class SubscriptionControl {
      *
      * @return double           the sum of the subscription cost
      */
-    public double calculateCost() {
+    public double calculateCost()
+    {
         double priceTotal = 100.99;
 
         return priceTotal;
@@ -42,7 +46,8 @@ public class SubscriptionControl {
      * @param eDate             a timestamp for the end
      * @param userID            a String which is the userID to attach
      */
-    public void createSubscription(Date sDate, Date eDate, int userID) {
+    public void createSubscription(Date sDate, Date eDate, int userID)
+    {
 
     }
 
@@ -50,7 +55,8 @@ public class SubscriptionControl {
      * Remove subscription
      * Sets the status to removed.
      */
-    public void removeSelectedSubscription() {
+    public void removeSelectedSubscription()
+    {
 
     }
 
@@ -59,7 +65,9 @@ public class SubscriptionControl {
      *
      * @param userID            a String to query storage items for
      */
-    public Subscription selectSubscriptionByUserId(int userID) {
+    public Subscription selectSubscriptionByUserId(int userID)
+    {
+
         return this.selectedSubscription;
     }
 
@@ -73,7 +81,8 @@ public class SubscriptionControl {
      * @param sDate             a timestamp for the new start
      * @param eDate             a timestamp for the new end
      */
-    public void changeSelectedSubscription(Date sDate, Date eDate, int userID) {
+    public void changeSelectedSubscription(Date sDate, Date eDate, int userID)
+    {
 
     }
 }
