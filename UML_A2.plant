@@ -37,7 +37,8 @@ class RoomControl <<(S, #FF7700) singleton>> {
     + getRoomActivities(): String []
     + selectRoomByActivity(String activity): boolean
     + selectRoomByRoomID(int roomID): boolean
-    + fetchRoomPlaces(): String[]
+    + fetchRoomPlacesString(): String[]
+    + fetchRoomPlacesList(): List<String>
     + assignUserToRoomPlace(int userID, int placeID): void
 }
 class Room {
@@ -75,6 +76,9 @@ class User {
     + setActive(): void
     + setInactive(): void
     + setRemoved(): void
+    + getID(): String
+    + getName(): String
+    + getStatus(): String
     + toString(): String
     + toArray(): String[]
 }

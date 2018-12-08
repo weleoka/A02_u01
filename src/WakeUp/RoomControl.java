@@ -1,5 +1,6 @@
 package WakeUp;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -31,14 +32,16 @@ public class RoomControl
      * A room is used for an activity. This method lists
      * all the available activities.
      *
-     * todo: implement a check of the enum Activities to find types.
+     * todo: implement a check of the enum Activities to find type
+     *  return them in a LinkedList.
      *
      * @return String[]         an array of available activities
      */
     public String[] getRoomActivities()
     {
-        String [] activitiesList = {"Spinning", "Aerobics", "Yoga"};
-        //List<String> activities = Room.getActivities();
+        String[] activitiesList = {"Spinning", "Aerobics", "Yoga"};
+        //List<String> activities = new LinkedList<String>();
+        //activities = Room.getActivities();
         return activitiesList;
     }
 
@@ -94,25 +97,58 @@ public class RoomControl
 
 
     /**
+     * This will return the list of all places in a room
+     * in a pretty String format for printing.
+     *
+     * @return allPlaces            an array of all places in a room
+     */
+    public String fetchRoomPlacesString()
+    {
+        String allPlaces = this.selectedRoom.toString();
+
+        return allPlaces;
+    }
+
+    /**
      * This will return the list of all places in a room.
      *
      * @return allPlaces            an array of all places in a room
      */
-    public String[] fetchRoomPlaces()
+    public List<String> fetchRoomPlacesList()
     {
-        String[] tmparr = {};
+        List<String> allPlaces = this.selectedRoom.getAllPlaces();
 
-        return tmparr;
+        return allPlaces;
     }
 
     /**
+     * Set a User ID to a certain place in the room
      *
-     * @param userID                an int that is the user ID
-     * @param placeID               an int that is the selected place ID
+     * The place Id has to be in the format Letter + Number (Char + Int)
+     *
+     * todo: get a String[] of all letter-number places pairs and make sure
+     *  that user input is one of these to catch faulty input.
+     *
+     * @param placeID               a String that is the selected place ID
+     * @param userID                a String that is the selected user ID
      */
-    public void assignUserToRoomPlace(int userID, int placeID)
+    public boolean assignUserToRoomPlace(String placeID, String userID)
     {
+        String[] parts = placeID.trim().split("(?<=\\d)"); //"(?<=[a-zA-Z])");
+        System.out.println(Arrays.toString(parts));
+        //String[] parts = placeID.split("(\\S+)(\\d)");
+        //String[] parts = source.split("(?<=\\d)(?=\\D)|(?<=\\D)(?=\\d)");
+        if (parts.length == 2)  // only allow two characters
+        {
 
+            if (this.selectedRoom.setBookedPlace(parts, userID))
+            {
+
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**

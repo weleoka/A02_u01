@@ -1,5 +1,7 @@
 package WakeUp;
 import java.io.IOError;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Scanner;   // Take user input from the console.
 import static java.lang.System.*; // input and output to the console.
 
@@ -75,14 +77,18 @@ public class WakeUp {
                         createUser();
                         break inputLoop;
 
-                    case 3: // Secret case for making new rooms.
+                    case 3: // Secret case for making default rooms.
                         generateDefaultRooms();
                         break inputLoop;
+
+                    case 4: // Secret case for booking an activity.
+                        bookActivity();
 
                     case 9:
                         quit();
                         break inputLoop;
                 }
+                userInput.next(); // flush the in buffer
 
             }
 
@@ -90,7 +96,6 @@ public class WakeUp {
             {
                 out.println(UI_strings.menuSelectionFailed);
             }
-            userInput.next(); // flush the in buffer
         }
     }
 
@@ -126,22 +131,17 @@ public class WakeUp {
                         bookActivity();
                         break inputLoop;
 
-                    case 2:
+                    case 9:
                         logoutUser();
                         break inputLoop;
-
-                    case 9:
-                        mainMenu();
-                        break inputLoop;
                 }
-
             }
 
             else
             {
                 System.out.println(UI_strings.menuSelectionFailed);
-                userInput.next(); // flush the in buffer
             }
+            userInput.next(); // flush the in buffer
         }
     }
 
@@ -160,6 +160,114 @@ public class WakeUp {
         String[] tmpArr = {userName, userID};
 
         return tmpArr;
+    }
+
+    /**
+     * Select activity prompt
+     *     * todo: catch error if instantiating non-valid activity ENUM.
+     *      *  - Seems to require an explicit throwing of an exception.
+     *      * try {
+     *      *     this.url = new URL(url);
+     *      * }
+     *      * catch(MalformedURLException e) {
+     *      *     throw new AssertionError(e);
+     *      * }
+     * @return boolean          true if the room and activity have been set
+     */
+    private static boolean selectActivityPrompt()
+    {
+        int i;
+        int selection;
+        String output = "";
+        String [] activities = ROOMCONTROL.getRoomActivities();
+        // Render the menu selections outside of the input loop.
+        for (i = 0; i <= activities.length - 1; i++)
+        {
+            output += String.format("\n%s: %s", (i + 1), activities[i]);
+        }
+
+        inputLoop: while (true)
+        {
+            out.println(output);    // Print the possible options.
+            out.println(UI_strings.selectActivityPrompt);
+
+            if (userInput.hasNextInt())
+            {
+                selection = userInput.nextInt();
+
+                try
+                {
+
+                    if (ROOMCONTROL.selectRoomByActivity(activities[selection - 1]))
+                    {
+
+                        break inputLoop;
+                    }
+                }
+
+                catch (IOError e) // big fat enum error and others here:
+                {
+                    out.println(UI_strings.noSuchActivity);
+                }
+
+            }
+
+            else
+            {
+                System.out.println(UI_strings.menuSelectionFailed);
+                userInput.next(); // flush the in buffer.
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * Select room place prompt
+     *
+     * todo: DRY the two else clauses.
+     * todo: Bug: when selecting the same place again as was chosen before and the
+     *  user was assigned to it then the input is not parsed. Also does it if entering
+     *  incorrect room ID and then a correct one. Something to do with Scanner.
+     *
+     * @return selection             a String of the selected place (2a, or 2c, etc.)
+     */
+    private static String selectRoomPlacePrompt()
+    {
+        int i;
+        String selection;
+        String output = ROOMCONTROL.fetchRoomPlacesString();
+        List<String> placesIDs = ROOMCONTROL.fetchRoomPlacesList();
+
+        inputLoop: while (true)
+        {
+            out.println(output);
+            out.println(UI_strings.selectRoomPlacePrompt);
+            out.println(placesIDs.toString());
+
+            if (userInput.hasNext())
+            {
+                selection = userInput.next().toLowerCase();
+
+                if (placesIDs.indexOf(selection) >= 0)  // Its a valid room ID.
+                {
+
+                    break;
+                }
+                else
+                {
+                    System.out.println(UI_strings.menuSelectionFailed);
+                }
+            }
+
+            else
+            {
+                System.out.println(UI_strings.menuSelectionFailed);
+            }
+            userInput.next(); // flush the input buffer.
+        }
+
+        return selection;
     }
 
 
@@ -231,56 +339,32 @@ public class WakeUp {
 
     /**
      * Handles booking an activity.
-     * Requires a loged in user.
+     * Requires a logged in user.
      *
-     * todo: catch error if instantiating non-valid activity ENUM.
-     *  - Seems to require an explicit throwing of an exception.
-     * try {
-     *     this.url = new URL(url);
-     * }
-     * catch(MalformedURLException e) {
-     *     throw new AssertionError(e);
-     * }
      */
     private static void bookActivity()
     {
-        int i;
-        int selection;
-        String output = "";
-        String [] activities = ROOMCONTROL.getRoomActivities();
-
-
-        for (i = 0; i <= activities.length - 1; i++)
-        {   // Render the menu selections outside of the input loop.
-            output += String.format("\n%s: %s", (i + 1), activities[i]);
-        }
-
-        inputLoop: while (true)
+        if (selectActivityPrompt())
         {
-            out.println(output);    // Print the possible options.
-
-            if (userInput.hasNextInt())
+            inputLoop: while (true)
             {
-                selection = userInput.nextInt();
+                String placeID = selectRoomPlacePrompt();
 
-                try
+                if (ROOMCONTROL.assignUserToRoomPlace(placeID, USERCONTROL.getSelectedUserID()))
                 {
-                    ROOMCONTROL.selectRoomByActivity(activities[selection - 1]);
+                    out.println(UI_strings.assignedUserToPlace);
+
+                    selectRoomPlacePrompt();
                 }
 
-                catch (IOError e) // big fat enum error and others here:
+                else
                 {
-                    out.println(UI_strings.noSuchActivity);
+                    out.println(UI_strings.assignedUserToPlaceFail);
                 }
-
-            }
-
-            else
-            {
-                System.out.println(UI_strings.menuSelectionFailed);
-                userInput.next(); // flush the in buffer.
             }
         }
+        out.println(UI_strings.bookingActivitySuccess);
+
     }
 
 
@@ -397,9 +481,13 @@ class UI_strings
     public static String unsuccessfullLogin = "Log-in misslyckades. Försök igen.";
     public static String logoutSuccessfull = "Du är nu utloggad.";
 
-
-
-
     // Activity booking
     public static String noSuchActivity = "Den aktiviteten finns inte. Försök igen.";
+    public static String selectActivityPrompt = "Välj aktivitet:";
+    public static String selectRoomPlacePrompt = "Välj plats (ex. 2b eller 1d): ";
+    public static String assignedUserToPlace = "Du har registrerats på platsen i rummet.";
+    public static String assignedUserToPlaceFail = "Den platsen är redan bokad.";
+
+    public static String bookingActivitySuccess = "Bra! Aktiviteten är bokad!";
+
 }

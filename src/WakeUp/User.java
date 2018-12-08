@@ -53,19 +53,19 @@ public class User extends CSVDB {
 
 
 
-    public String getSelectedUserID()
+    public String getID()
     {
 
         return this.id;
     }
 
-    public String getSelectedUserName()
+    public String getName()
     {
 
         return this.name;
     }
 
-    public String getSelectedUserStatus()
+    public String getStatus()
     {
 
         return this.status.toString();

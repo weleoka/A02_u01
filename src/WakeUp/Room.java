@@ -1,5 +1,8 @@
 package WakeUp;
 
+import java.util.LinkedList;
+import java.util.List;
+
 /**
  * Representation of a room.
  *
@@ -9,6 +12,7 @@ public class Room extends CSVDB {
     private Activity activity;
     private String id;
     private String[][] roomPlaces;  // A 2D array of places in the room
+    private char[] ALPHABET = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l'};
     // Constructor for loading room from DB or creating new room.
     Room(String[] roomArr) {
         this.id = roomArr[0];
@@ -96,16 +100,24 @@ public class Room extends CSVDB {
     }
 
     /**
-     * Check the room and return a list of all places weather they are
-     * booked or not.
+     * Check the room and return a list of all places IDs.
      *
-     * @return allPlaces            an array of all places
+     * @return placesIDs            a LinkedList of all places IDs
      */
-    public String[] getAllPlaces()
+    public List<String> getAllPlaces()
     {
-        String[] tmparr = {};
+        List<String> placesIDs = new LinkedList<String>(); // Linked because inserting at end.
 
-        return tmparr;
+        for (int row = 0; row < this.roomPlaces.length; row++)
+        {
+
+            for (int column = 0; column < this.roomPlaces[row].length; column++) {
+                String columnChar = String.valueOf(ALPHABET[column]); // cast from char to String
+                placesIDs.add(String.format("%s%s", row, columnChar));
+            }
+        }
+
+        return placesIDs;
     }
 
     /**
@@ -115,7 +127,6 @@ public class Room extends CSVDB {
      */
     public String[] getBookedPlaces()
     {
-
         String[] tmparr = {};
 
         return tmparr;
@@ -128,15 +139,47 @@ public class Room extends CSVDB {
      * Set a place in the room to booked by
      * recording a user ID to it.
      *
-     * @param placeID               an int representing the places ID
+     * The place has to be in array form
+     * Where index 0 is castable to int
+     * where index 1 is castable to char
+     *
+     * i.e 2a, or 3d
+     *
+     *
+     * @param placeID               a String[] representing the places ID
      * @param userID                a String of the user ID
      *
      * @return boolean              true if successful
      */
-    public boolean setBookedPlace(int placeID, int userID)
+    public boolean setBookedPlace(String[] placeID, String userID)
     {
+        int row = Integer.parseInt(placeID[0]);
+        char columnChar = placeID[1].charAt(0);
+        int column;
 
-        return true;
+        for (int i = 0; i < ALPHABET.length; i++)   // Find row index in 2D array
+        {
+            System.out.printf("\ncomparing %s to %s\n", columnChar, ALPHABET[i]);
+            if (columnChar == ALPHABET[i]) // compare char to char
+            {
+                column = i;
+
+                if (this.roomPlaces[row][column] != null)
+                {
+
+                    return false;
+                }
+
+                else
+                {
+                    this.roomPlaces[row][column] = userID;
+
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
 
@@ -152,20 +195,21 @@ public class Room extends CSVDB {
     @Override
     public String toString()
     {
-        String output = "";
+        String output = String.format("\nRoom ID: %s - Activity: %s\n\n  Places: \n---", this.id, this.activity.toString());
 
         for (int row = 0; row < this.roomPlaces.length; row++)
         {
-            output += String.format("%s: ", row);
 
             if (row == 0)   // Print column names for first row.
             {
 
                 for (int column = 0; column < this.roomPlaces[row].length; column++)
                 {
-                    output += String.format("-%s-", column);
+                    output += String.format("%s-", ALPHABET[column]);
                 }
+                output += String.format("\n"); // finish with a newline
             }
+            output += String.format("%s: ", row); // Print the row number
 
             for (int column = 0; column < this.roomPlaces[row].length; column++)
             {

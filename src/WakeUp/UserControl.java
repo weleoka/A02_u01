@@ -92,11 +92,22 @@ public class UserControl {
         if (this.authenticatedUser == null)
         {
 
-            return true;
+            return false;
         }
 
-        return false;
+        return true;
     }
+
+    /**
+     * return the ID of the selected user
+     *
+     * @return userID           true if user is set and thus logged in
+     */
+    public String getSelectedUserID ()
+    {
+        return this.selectedUser.getID();
+    }
+
 
     /**
      * setAuthenticated
@@ -107,7 +118,7 @@ public class UserControl {
     public boolean loginSelectedUser(String userID)
     {
         //System.out.printf("'%s' VS '%s'", userID, this.selectedUser.getSelectedUserID()); //debug line.
-        if (userID.equalsIgnoreCase(this.selectedUser.getSelectedUserID()))
+        if (userID.equalsIgnoreCase(this.selectedUser.getID()))
         {
             this.authenticatedUser = this.selectedUser;
 
