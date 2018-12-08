@@ -6,26 +6,32 @@ package WakeUp;
  */
 public class Room extends CSVDB {
     // Fields declared
-    private static Activity activity;
-    private static String id;
-    private String[][] roomPlaces;
-    // Default empty constructor.
-    Room() {}
-    // Constructor for creating a new Room.
-    Room(String activity) {
-        setActivity(activity);
-    }
-    Room(String roomID, String activity) {
-        this.id = roomID;
-        this.setActivity(activity);
-    }
+    private Activity activity;
+    private String id;
+    private String[][] roomPlaces;  // A 2D array of places in the room
     // Constructor for loading room from DB or creating new room.
     Room(String[] roomArr) {
         this.id = roomArr[0];
         this.setActivity(roomArr[1]);
-        String[][] roomPlaces = this.generatePlaces();
-    }
 
+        try
+        {
+            this.generatePlaces(
+                    Integer.parseInt(roomArr[2]),
+                    Integer.parseInt(roomArr[3])
+            );
+        }
+
+        catch (NumberFormatException e)
+        {
+
+            throw e;
+        }
+    }
+    // Constructor for selecting a room by activity
+    Room(String activity) {
+
+    }
 
 
 
@@ -83,13 +89,10 @@ public class Room extends CSVDB {
      * Assumptions are that the room is always square and the
      * rows are always the same length.
      *
-     * @return roomPlaces               an Array of all the places in a room
      */
-    public static String[][] generatePlaces()
+    private void generatePlaces(int rows, int columns)
     {
-        String[][] tmpArr = new String[3][4];
-
-        return tmpArr;
+        this.roomPlaces = new String[rows][columns];
     }
 
     /**
@@ -112,6 +115,7 @@ public class Room extends CSVDB {
      */
     public String[] getBookedPlaces()
     {
+
         String[] tmparr = {};
 
         return tmparr;
@@ -152,18 +156,36 @@ public class Room extends CSVDB {
 
         for (int row = 0; row < this.roomPlaces.length; row++)
         {
+            output += String.format("%s: ", row);
+
+            if (row == 0)   // Print column names for first row.
+            {
+
+                for (int column = 0; column < this.roomPlaces[row].length; column++)
+                {
+                    output += String.format("-%s-", column);
+                }
+            }
 
             for (int column = 0; column < this.roomPlaces[row].length; column++)
             {
-                output += String.format("%s ", this.roomPlaces[row][column]);
+
+                if (this.roomPlaces[row][column] == null)   // Unoccupied places.
+                {
+                    output += String.format("O ");
+                }
+
+                else
+                {
+                    output += String.format("X ");  // Occupied places.
+                }
+                //output += String.format("%s ", this.roomPlaces[row][column]); // This prints all NULLS??
             }
             output += String.format("\n");
         }
 
         return output;
     }
-
-
 
     /**
      * Create an array representation of the object.
@@ -173,10 +195,14 @@ public class Room extends CSVDB {
     public String[] toArray()
     {
         String[] tmpArr = {
+                this.id,
                 this.activity.toString(),
-                this.id
+                Integer.toString(this.roomPlaces.length),
+                Integer.toString(this.roomPlaces[0].length)
         };
 
         return tmpArr;
     }
 }
+
+

@@ -89,7 +89,7 @@ public class UserControl {
     public boolean isAuthenticatedUser ()
     {
 
-        if (this.authenticatedUser instanceof User)
+        if (this.authenticatedUser == null)
         {
 
             return true;

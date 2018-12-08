@@ -1,6 +1,5 @@
 package WakeUp;
 
-
 import java.util.List;
 
 /**
@@ -9,7 +8,7 @@ import java.util.List;
 public class RoomControl
 {
     // Fields declared
-    private static CSVDB roomDB;
+    private CSVDB roomDB;
     private Room selectedRoom;
     // Singleton
     private static RoomControl ourInstance = new RoomControl();
@@ -43,20 +42,52 @@ public class RoomControl
         return activitiesList;
     }
 
+
+
     /**
      * This sets the selected room depending on activity.
+     *
+     * @param activity              a String of the activity to look for
      */
-    public void selectRoomByActivity(String activity)
+    public boolean selectRoomByActivity(String activity)
     {
-        this.selectedRoom = new Room(activity);
+        List<String[]> roomList = this.roomDB.readCSVFull();
+
+        for (String[] roomArr : roomList)
+        {
+
+            if (activity.equalsIgnoreCase(roomArr[1]))
+            {
+                this.selectedRoom = new Room(roomArr);
+
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
-     * This sets the selected room depending on activity.
+     * This sets the selected room depending on room ID..
+     *
+     * @param roomID                a String of the roomID to look for
      */
-    public void selectRoomByRoomID(int roomID)
+    public boolean selectRoomByRoomID(String roomID)
     {
+        List<String[]> roomList = this.roomDB.readCSVFull();
 
+        for (String[] roomArr : roomList)
+        {
+
+            if (roomID.equalsIgnoreCase(roomArr[1]))
+            {
+                this.selectedRoom = new Room(roomArr);
+
+                return true;
+            }
+        }
+
+        return false;
     }
 
 
@@ -85,11 +116,23 @@ public class RoomControl
     }
 
     /**
-     * Temporary method to generate rooms.
+     * Create a new room from parameters
+     *
+     * todo: write the room to database directly without going toArray method etc.
+     *
+     * @param array     a string[] of the the following and in this order:
+     *      id               a String of the room's identifier
+     *      activity         a String representing the activity to set for the room
+     *      rows             a String of the number of rows in the room
+     *      columns          a String of the number of columns in the room
+     *
+     * @return boolean      it is true if the room was created successfully
      */
-    public static void generateDefaultRooms()
+    public boolean createRoom(String[] array)
     {
+        this.selectedRoom = new Room(array);
+        this.roomDB.writeCSVLine(this.selectedRoom.toArray());
 
-        Room room1 = new Room();
+        return true;
     }
 }

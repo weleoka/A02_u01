@@ -24,7 +24,7 @@ public class WakeUp {
     /**
      * Program entry point.
      *
-     * @param args
+     * @param args              none required
      */
     public static void main(String args[])
     {
@@ -75,9 +75,9 @@ public class WakeUp {
                         createUser();
                         break inputLoop;
 
-                    /*case 3:
+                    case 3: // Secret case for making new rooms.
                         generateDefaultRooms();
-                        break inputLoop;*/
+                        break inputLoop;
 
                     case 9:
                         quit();
@@ -105,7 +105,7 @@ public class WakeUp {
      */
     private static void loggedInMenu()
     {
-        int selection = 0;
+        int selection;
 
         if (!USERCONTROL.isAuthenticatedUser()) {
             out.println(UI_strings.userNotAuthenticated);
@@ -148,7 +148,7 @@ public class WakeUp {
     /**
      * Simple name and password prompt
      *
-     * @returns credentials             an array of name and password pair
+     * @returns tmpArr             an array of name and password pair
      */
     private static String[] credentialsPrompt()
     {
@@ -244,14 +244,14 @@ public class WakeUp {
      */
     private static void bookActivity()
     {
-        int i = 0;
-        int selection = 0;
+        int i;
+        int selection;
         String output = "";
         String [] activities = ROOMCONTROL.getRoomActivities();
 
-        // Render the menu selections outside of the input loop.
+
         for (i = 0; i <= activities.length - 1; i++)
-        {
+        {   // Render the menu selections outside of the input loop.
             output += String.format("\n%s: %s", (i + 1), activities[i]);
         }
 
@@ -266,14 +266,11 @@ public class WakeUp {
                 try
                 {
                     ROOMCONTROL.selectRoomByActivity(activities[selection - 1]);
-
                 }
 
-                catch (IOError e)
-                {   // big fat enum error here
+                catch (IOError e) // big fat enum error and others here:
+                {
                     out.println(UI_strings.noSuchActivity);
-
-                    continue;
                 }
 
             }
@@ -326,7 +323,30 @@ public class WakeUp {
      */
     private static void generateDefaultRooms()
     {
-        ROOMCONTROL.generateDefaultRooms();
+        String[] room1 = {
+                "ID1",
+                "yoga",
+                "3",
+                "3"
+        };
+        String[] room2 = {
+                "ID2",
+                "aerobics",
+                "4",
+                "4"
+        };
+        String[] room3 = {
+                "ID3",
+                "spinning",
+                "3",
+                "3"
+        };
+
+        ROOMCONTROL.createRoom(room1);
+        ROOMCONTROL.createRoom(room2);
+        ROOMCONTROL.createRoom(room3);
+        out.println("Rooms generated");
+        mainMenu();
     }
 
     /**
@@ -356,7 +376,7 @@ class UI_strings
     public static String mainMenu = menuHeader + mainMenuAlternatives + makeSelectionPrompt;
     public static String loggedInMenu = menuHeader + loggedInMenuAlternatives + makeSelectionPrompt;
     public static String goodbyeString = "\n\nHej då, och tack för besöket.";
-    
+
     // User creation
     public static String createUserHeader = "--> Skapa Ny Användare";
     public static String promptUserName = "Skriv användarnamn:";
