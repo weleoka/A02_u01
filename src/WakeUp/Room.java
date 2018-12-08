@@ -1,5 +1,6 @@
 package WakeUp;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -93,6 +94,9 @@ public class Room extends CSVDB {
      * Assumptions are that the room is always square and the
      * rows are always the same length.
      *
+     * todo: make a String[] array with fixed length as we know the number of
+     *  list items beforehand.
+     *
      */
     private void generatePlaces(int rows, int columns)
     {
@@ -102,10 +106,13 @@ public class Room extends CSVDB {
     /**
      * Check the room and return a list of all places IDs.
      *
+     * todo: Make a fixed length array as we know the number of values to store.
+     *
      * @return placesIDs            a LinkedList of all places IDs
      */
     public List<String> getAllPlaces()
     {
+        // listItemQuantity = rows x columns; String[listItemQuantity] placesIDs;
         List<String> placesIDs = new LinkedList<String>(); // Linked because inserting at end.
 
         for (int row = 0; row < this.roomPlaces.length; row++)
@@ -118,6 +125,28 @@ public class Room extends CSVDB {
         }
 
         return placesIDs;
+    }
+
+    /**
+     * Get a list of all places IDs and corresponding values to them.
+     *
+     * @return placesBookingsHM           a HashMap of all places IDs and value pairs
+     */
+    public HashMap<String, String> getAllBookingsPlaces()
+    {
+        HashMap<String, String> placesBookingsHM = new HashMap<>();
+
+        for (int row = 0; row < this.roomPlaces.length; row++)
+        {
+
+            for (int column = 0; column < this.roomPlaces[row].length; column++)
+            {
+                String columnChar = String.valueOf(ALPHABET[column]); // cast from char to String
+                placesBookingsHM.put(String.format("%s%s", row, columnChar), this.roomPlaces[row][column]);
+            }
+        }
+
+        return placesBookingsHM;
     }
 
     /**
@@ -139,9 +168,9 @@ public class Room extends CSVDB {
      * Set a place in the room to booked by
      * recording a user ID to it.
      *
-     * The place has to be in array form
-     * Where index 0 is castable to int
-     * where index 1 is castable to char
+     * The place has to be in array form and
+     * Where item at index 0 is castable to int
+     * Where item at index 1 is castable to char
      *
      * i.e 2a, or 3d
      *
@@ -159,18 +188,18 @@ public class Room extends CSVDB {
 
         for (int i = 0; i < ALPHABET.length; i++)   // Find row index in 2D array
         {
-            System.out.printf("\ncomparing %s to %s\n", columnChar, ALPHABET[i]);
+            // System.out.printf("\ncomparing %s to %s\n", columnChar, ALPHABET[i]); // debug line
             if (columnChar == ALPHABET[i]) // compare char to char
             {
                 column = i;
 
-                if (this.roomPlaces[row][column] != null)
+                if (this.roomPlaces[row][column] != null)   // Already exists a booking.
                 {
 
                     return false;
                 }
 
-                else
+                else                                        // Free spot!
                 {
                     this.roomPlaces[row][column] = userID;
 

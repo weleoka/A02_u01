@@ -1,6 +1,7 @@
 package WakeUp;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -44,6 +45,7 @@ public class RoomControl
         //activities = Room.getActivities();
         return activitiesList;
     }
+
 
 
 
@@ -97,7 +99,7 @@ public class RoomControl
 
 
     /**
-     * This will return the list of all places in a room
+     * This will return the list of all places in a room,
      * in a pretty String format for printing.
      *
      * @return allPlaces            an array of all places in a room
@@ -120,6 +122,22 @@ public class RoomControl
 
         return allPlaces;
     }
+
+    /**
+     * This will return the list of all places in a room and
+     * the relevant userIDs for places booked.
+     *
+     * @return allPlaces            a HashMap of placeID -> userID pairs
+     */
+    public HashMap<String, String> fetchRoomPlacesBookingsList()
+    {
+        HashMap<String, String> hm = this.selectedRoom.getAllBookingsPlaces();
+
+        return hm;
+    }
+
+
+
 
     /**
      * Set a User ID to a certain place in the room
@@ -150,6 +168,9 @@ public class RoomControl
 
         return false;
     }
+
+
+
 
     /**
      * Create a new room from parameters

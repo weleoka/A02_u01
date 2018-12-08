@@ -145,6 +145,9 @@ public class WakeUp {
         }
     }
 
+
+
+
     /**
      * Simple name and password prompt
      *
@@ -401,6 +404,9 @@ public class WakeUp {
     {
 
     }
+
+
+
 
     /**
      * Create and save to database default rooms.
