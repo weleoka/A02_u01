@@ -8,7 +8,7 @@ import java.util.List;
  * Representation of a room.
  *
  */
-public class Room extends CSVDB {
+public class Room {
     // Fields declared
     private Activity activity;
     private String id;
@@ -107,13 +107,14 @@ public class Room extends CSVDB {
      * Check the room and return a list of all places IDs.
      *
      * todo: Make a fixed length array as we know the number of values to store.
+     *  There's no reason to use a LinkedList.
      *
      * @return placesIDs            a LinkedList of all places IDs
      */
     public List<String> getAllPlaces()
     {
         // listItemQuantity = rows x columns; String[listItemQuantity] placesIDs;
-        List<String> placesIDs = new LinkedList<String>(); // Linked because inserting at end.
+        List<String> placesIDs = new LinkedList<>(); // Linked because inserting at end.
 
         for (int row = 0; row < this.roomPlaces.length; row++)
         {
@@ -151,6 +152,8 @@ public class Room extends CSVDB {
 
     /**
      * Check the array of places to see which ones are booked.
+     *
+     * todo: all of it. not implemented yet.
      *
      * @return bookedPlaces         an array of booked places
      */

@@ -10,11 +10,12 @@ import java.util.List;
  * userArr[1] is the userID
  * userArr[2] is the status
  *
- * todo: move the user to/from database logic to User class.
+ * todo: move the to/from database logic to out into User class.
+ * todo: pass the User instance to callers?
  */
 public class UserControl {
     // Fields declared
-    private static CSVDB userDB;    // the database connection interface.
+    private CSVDB userDB;    // the database connection interface.
     private User selectedUser;  // user object that is subject to operations.
     private User authenticatedUser; // holds a reference to the user object if isAuthenticated.
     // Singleton
@@ -68,7 +69,7 @@ public class UserControl {
 
         for (String[] userArr : userList) {
 
-            if (userID == userArr[1]) {
+            if (userID.equalsIgnoreCase(userArr[1])) {
                 this.selectedUser = new User(userArr);
 
                 return true;
@@ -76,6 +77,24 @@ public class UserControl {
         }
 
         return false;
+    }
+
+    /**
+     * Print the entire user database to stdout.
+     */
+    public void printUserList()
+    {
+        List<String[]> userList = this.userDB.readCSVFull();
+
+        for ( String[] user : userList)
+        {
+
+            for (String item : user)
+            {
+                System.out.println(item);
+            }
+        }
+        System.out.println("==========================");
     }
 
 
@@ -107,6 +126,30 @@ public class UserControl {
     {
         return this.selectedUser.getID();
     }
+
+
+    /**
+     * return the status of the selected user
+     *
+     * @return status           true if user is active else false
+     */
+    public boolean getSelectedUserStatus ()
+    {
+        return this.selectedUser.getStatus();
+    }
+
+    /**
+     * return the status of the selected user
+     *
+     * @return status           true if user is active else false
+     */
+    public void setSelectedUserStatus (String status)
+    {
+        this.selectedUser.setStatus(status);
+
+    }
+
+
 
 
     /**

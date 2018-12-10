@@ -1,35 +1,111 @@
 package WakeUp;
 
+import java.time.Duration;
+import java.time.LocalDate;
 import java.util.Date;
 
 /**
  * Class representing a subscription for a user of WakeUp Gym.
+ *
+ * Serialised it looks like the following:
+ *
+ *                 this.sDate.toString(),
+ *                 this.eDate.toString(),
+ *                 this.userID,
+ *                 this.status.toString()
  */
 public class Subscription {
-    private static Date sDate;
-    private static Date eDate;
-    private static int userID; // Development int. later String.
-    private static Status status; // enum class Status.
+    private LocalDate sDate;
+    private LocalDate eDate;
+    private String userID;
+    private Status status; // enum class Status.
 
+    // Constructor for creating new subscription
+    Subscription(String userID, int months)
+    {
+        this.sDate = LocalDate.now();
+        this.eDate = sDate.plusMonths(months);
+    }
+
+    // Constructor for creating new subscription
+    Subscription(LocalDate sDate, LocalDate eDate, String userID)
+    {
+        this.sDate = sDate;
+        this.eDate = eDate;
+        this.userID = userID;
+    }
+
+    // Constructor for loading subscription from DB.
+    Subscription(String[] subscriptionArr) {
+        LocalDate sDate = LocalDate.parse(subscriptionArr[0]);
+        LocalDate eDate = LocalDate.parse(subscriptionArr[1]);
+        this.setStatus(subscriptionArr[2]);
+        this.userID = subscriptionArr[3];
+    }
+
+
+
+
+    /**
+     * Get the number of months duration of the subscription.
+     *
+     * @return months               an int with the number of months of the subscription
+     */
+    public int getMonths()
+    {
+        int months;
+        long numberOfDays = Duration.between(this.eDate, this.sDate).toDays();
+        months = Math.toIntExact(numberOfDays / 30);
+
+        return months;
+    }
+
+
+
+
+
+    /**
+     * Get the starting date.
+     *
+     * @return sDate             a timestamp for start time
+     */
+    public LocalDate getSDate()
+    {
+
+        return this.sDate;
+    }
     /**
      * Set the starting date.
      *
      * @param sDate             a timestamp for start
      */
-    public void setSDate(Date sDate)
+    public void setSDate(LocalDate sDate)
     {
         this.sDate = sDate;
     }
 
     /**
+     * Get the ending date.
+     *
+     * @return eDate             a timestamp for end time
+     */
+    public LocalDate getEDate()
+    {
+
+        return this.eDate;
+    }
+    /**
      *  Set the ending date.
      *
      * @param eDate             a timestamp for end
      */
-    public void setEDate(Date eDate)
+    public void setEDate(LocalDate eDate)
     {
         this.eDate = eDate;
     }
+
+
+
 
     /**
      * Toggle to active.
@@ -40,7 +116,7 @@ public class Subscription {
     }
 
     /**
-     * Toggle to active.
+     * Toggle to inactive.
      */
     public void setInactive()
     {
@@ -54,6 +130,46 @@ public class Subscription {
     {
         this.status = status.REMOVED;
     }
+
+
+
+
+    /**
+     * Helper to make a string into the correct status enum call.
+     *
+     * @param sta               a String of the status to set
+     */
+    private void setStatus(String sta)
+    {
+
+        switch (sta.toLowerCase())
+        {
+            case "active":
+                this.status = status.ACTIVE;
+                break;
+
+            case "inactive":
+                this.status = status.INACTIVE;
+                break;
+
+            case "removed":
+                this.status = status.REMOVED;
+                break;
+        }
+    }
+
+    /**
+     *
+     * @return status           a boolean true if active else false
+     */
+    public boolean getStatus()
+    {
+
+        return (this.status == status.ACTIVE);
+    }
+
+
+
 
     /**
      * toString override
@@ -76,7 +192,8 @@ public class Subscription {
         String[] tmpArr = {
                 this.sDate.toString(),
                 this.eDate.toString(),
-                this.status.toString()
+                this.userID,
+                Status.ACTIVE.toString() // By default a subscription is active.
         };
 
         return tmpArr;

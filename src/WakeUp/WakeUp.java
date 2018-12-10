@@ -1,5 +1,6 @@
 package WakeUp;
 import java.io.IOError;
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;   // Take user input from the console.
@@ -18,7 +19,7 @@ import static java.lang.System.*; // input and output to the console.
  *
  */
 public class WakeUp {
-    private static Scanner userInput = new Scanner(in);  // User input
+    private static Scanner userInput = new Scanner(in);
     private static UserControl USERCONTROL = UserControl.getInstance();
     private static RoomControl ROOMCONTROL = RoomControl.getInstance();
     private static SubscriptionControl SUBSCRCONTROL = SubscriptionControl.getInstance();
@@ -36,12 +37,16 @@ public class WakeUp {
 
 
 
+    // - - - Menus of user choice - - -
     /**
      * Menu default to all users.
      *
      * Items:
      * 1) Login User
      * 2) Create User
+     * -3) Generate default rooms
+     * -4) Quickbook activity (does not work because user is not loaded)
+     * -5) List all users and their data.
      * 9) Quit Application
      *
      * todo: test the inputLoop breaking and what happens to following switch cases.
@@ -84,11 +89,14 @@ public class WakeUp {
                     case 4: // Secret case for booking an activity.
                         bookActivity();
 
+                    case 5: // Secret case for listing users.
+                        listUsers();
+
                     case 9:
                         quit();
                         break inputLoop;
                 }
-                userInput.next(); // flush the in buffer
+                userInput.reset(); // flush the in buffer
 
             }
 
@@ -129,7 +137,11 @@ public class WakeUp {
 
                     case 1:
                         bookActivity();
-                        break inputLoop;
+                        continue;
+
+                    case 2:
+                        createSubscription();
+                        continue;
 
                     case 9:
                         logoutUser();
@@ -141,13 +153,14 @@ public class WakeUp {
             {
                 System.out.println(UI_strings.menuSelectionFailed);
             }
-            userInput.next(); // flush the in buffer
+            userInput.reset(); // flush the in buffer
         }
     }
 
 
 
 
+    // - - - Prompts for user input - - -
     /**
      * Simple name and password prompt
      *
@@ -267,15 +280,96 @@ public class WakeUp {
             {
                 System.out.println(UI_strings.menuSelectionFailed);
             }
-            userInput.next(); // flush the input buffer.
+            userInput.reset(); // flush the input buffer.
         }
 
         return selection;
     }
 
+    /**
+     * Select subscription prompt
+     *
+     * @return int          the number of required months of subscription
+     */
+    private static int selectSubscriptionPrompt() {
+        int months;
+
+        inputLoop: while (true)
+        {
+            out.println(UI_strings.priceListPretty);
+            out.println(UI_strings.selectSubscriptionPrompt);
+
+            if (userInput.hasNextInt())
+            {
+                months = userInput.nextInt();
+
+                break inputLoop;
+
+            }
+
+            else
+            {
+                System.out.println(UI_strings.menuSelectionFailed);
+                userInput.next(); // flush the in buffer.
+            }
+        }
+
+        return months;
+    }
+
+    /**
+     * Confirm subscription prompt
+     *
+     * @return boolean          true if the subscription has been accepted
+     */
+    private static boolean confirmSubscriptionPrompt(int months)
+    {
+        double priceTotal;
+        String agreement;
+        priceTotal = SUBSCRCONTROL.calculateCost(months);
+        String output = "";
+
+        if (!USERCONTROL.getSelectedUserStatus())
+        {
+            output += UI_strings.membershipNeeded;
+            priceTotal += 100;
+        }
+        output += UI_strings.subscriptionPriceTotal;
+
+        inputLoop: while (true)
+        {
+            out.println(output + priceTotal);
+            out.println(UI_strings.confirmSubscriptionPrompt);
+
+            if (userInput.hasNext())
+            {
+                agreement = userInput.next();
+
+                if (agreement.equalsIgnoreCase("j"))
+                {
+
+                    return true;
+                }
+
+                else if (agreement.equalsIgnoreCase("n"))
+                {
+
+                    return false;
+                }
+            }
+
+            else
+            {
+                System.out.println(UI_strings.menuSelectionFailed);
+                userInput.reset(); // flush the in buffer.
+            }
+        }
+    }
 
 
 
+
+    // - - - Functionality - - -
     /**
      * Steps for logging user in.
      *
@@ -293,8 +387,8 @@ public class WakeUp {
             {
                 out.println(UI_strings.userIDValid);
 
-                if (USERCONTROL.loginSelectedUser(creds[1]))
-                {    // Test ID and name pair for match in db.
+                if (USERCONTROL.loginSelectedUser(creds[1])) // Test ID and name pair for match in db.
+                {
 
                     return true;
 
@@ -303,6 +397,7 @@ public class WakeUp {
                 else
                 {
                     out.println(UI_strings.userNameToIDMissmatch);
+                    WakeUpHelpers.sleeper(700);
 
                     return false;
                 }
@@ -312,6 +407,7 @@ public class WakeUp {
             else
             {
                 out.println(UI_strings.userIDInvalid);
+                WakeUpHelpers.sleeper(700);
 
                 return false;
             }
@@ -321,6 +417,7 @@ public class WakeUp {
         else
         {
             out.println(UI_strings.userNameNotFound);
+            WakeUpHelpers.sleeper(700);
 
             return false;
         }
@@ -334,45 +431,14 @@ public class WakeUp {
     {
         USERCONTROL.logoutSelectedUser();
         out.println(UI_strings.logoutSuccessfull);
+        WakeUpHelpers.sleeper(700);
         mainMenu();
     }
 
 
 
 
-    /**
-     * Handles booking an activity.
-     * Requires a logged in user.
-     *
-     */
-    private static void bookActivity()
-    {
-        if (selectActivityPrompt())
-        {
-            inputLoop: while (true)
-            {
-                String placeID = selectRoomPlacePrompt();
-
-                if (ROOMCONTROL.assignUserToRoomPlace(placeID, USERCONTROL.getSelectedUserID()))
-                {
-                    out.println(UI_strings.assignedUserToPlace);
-
-                    selectRoomPlacePrompt();
-                }
-
-                else
-                {
-                    out.println(UI_strings.assignedUserToPlaceFail);
-                }
-            }
-        }
-        out.println(UI_strings.bookingActivitySuccess);
-
-    }
-
-
-
-
+    // - - - New object creation processes - - -
     /**
      * Registration process for a new user.
      */
@@ -381,17 +447,24 @@ public class WakeUp {
         out.println(UI_strings.createUserHeader);
         String[] creds = credentialsPrompt();
 
-        if (USERCONTROL.createUser(creds[0], creds[1]))
-        {
-            out.println(UI_strings.createUserSuccess);
+        if (WakeUpHelpers.validateUserID(creds[1])) {
 
+            if (USERCONTROL.createUser(creds[0], creds[1]))
+            {
+                out.println(UI_strings.createUserSuccess);
+            }
+
+            else
+            {
+                out.println(UI_strings.createUserFail);
+            }
         }
 
         else
         {
-            out.println(UI_strings.createUserFail);
+            out.println(UI_strings.userIDInvalid);
         }
-        WakeUpHelpers.sleeper(1000);
+        WakeUpHelpers.sleeper(700);
         //createSubscription();
         loggedInMenu();
     }
@@ -399,15 +472,98 @@ public class WakeUp {
     /**
      * Create a new subscription.
      * Requires a logged in user.
+     *
+     * todo: currently only works from time now() and months forwards.
      */
     private static void createSubscription()
     {
+        int subscriptionMonths = selectSubscriptionPrompt();
 
+        if (confirmSubscriptionPrompt(subscriptionMonths))
+        {
+            USERCONTROL.setSelectedUserStatus("active"); // Membership paid.
+            LocalDate sDate = LocalDate.now().minusDays(1); // Ensure the subscription can be used today.
+            LocalDate eDate = sDate.plusMonths(subscriptionMonths);
+
+            if (SUBSCRCONTROL.createSubscription(sDate, eDate, USERCONTROL.getSelectedUserID()))
+            {
+                out.println(UI_strings.assignedSubscriptionToUser);
+            }
+
+            else
+            {
+                out.println(UI_strings.assignedSubscriptionToUserFail);
+            }
+            WakeUpHelpers.sleeper(700);
+        }
+    }
+
+    /**
+     * Handles booking an activity.
+     *
+     * Requires a logged in user with a membership and a valid subscription.
+     *
+     */
+    private static void bookActivity()
+    {
+        // Find relevant subscription belonging to the user.
+        try
+        {
+            SUBSCRCONTROL.selectSubscriptionByUserId(USERCONTROL.getSelectedUserID());
+        }
+
+        catch (ArrayIndexOutOfBoundsException e)
+        {
+            out.println(UI_strings.userSubscriptionNotFound);
+        }
+
+        if (USERCONTROL.getSelectedUserStatus())
+        {
+
+            if (SUBSCRCONTROL.getSubscriptionStatus() && SUBSCRCONTROL.checkSubscriptionValidNow()) // In active and in date?
+            {
+                out.println(UI_strings.userSubscriptionUsable);
+                WakeUpHelpers.sleeper(700);
+
+                if (selectActivityPrompt())
+                {
+                    String placeID = selectRoomPlacePrompt();
+
+                    if (ROOMCONTROL.assignUserToRoomPlace(placeID, USERCONTROL.getSelectedUserID()))
+                    {
+                        out.println(UI_strings.assignedUserToPlace);
+                        selectRoomPlacePrompt();
+                    }
+
+                    else
+                    {
+                        out.println(UI_strings.assignedUserToPlaceFail);
+                    }
+                    WakeUpHelpers.sleeper(700);
+                }
+                out.println(UI_strings.bookingActivitySuccess);
+                WakeUpHelpers.sleeper(700);
+
+            }
+
+            else
+            {
+                out.println(UI_strings.userSubscriptionNotUsable);
+                WakeUpHelpers.sleeper(700);
+            }
+        }
+
+        else
+        {
+            out.println(UI_strings.userNotActive);
+        }
+        WakeUpHelpers.sleeper(700);
     }
 
 
 
 
+    // - - - Other methods - - -
     /**
      * Create and save to database default rooms.
      */
@@ -436,6 +592,16 @@ public class WakeUp {
         ROOMCONTROL.createRoom(room2);
         ROOMCONTROL.createRoom(room3);
         out.println("Rooms generated");
+        WakeUpHelpers.sleeper(700);
+        mainMenu();
+    }
+
+    /**
+     * List all the users in the database.
+     */
+    private static void listUsers()
+    {
+        USERCONTROL.printUserList();
         mainMenu();
     }
 
@@ -460,8 +626,8 @@ class UI_strings
     // Menus and selection
     public static String menuSelectionFailed = "Ogiltigt alternativ";
     public static String menuHeader = "\n - - - WakeUP Gym - - -";
-    public static String mainMenuAlternatives = "\n1.Logga in\n2.Registrera Användare\n9.Avsluta";
-    public static String loggedInMenuAlternatives = "\n1.Boka plats på aktivitet\n9.Logga ut";
+    public static String mainMenuAlternatives = "\n1.Logga in\n2.Registrera användare\n9.Avsluta";
+    public static String loggedInMenuAlternatives = "\n1.Boka plats på aktivitet\n2.Hantera abonnemang\n9.Logga ut";
     public static String makeSelectionPrompt = "\n\nVar god välj ett alternativ:";
     public static String mainMenu = menuHeader + mainMenuAlternatives + makeSelectionPrompt;
     public static String loggedInMenu = menuHeader + loggedInMenuAlternatives + makeSelectionPrompt;
@@ -470,7 +636,7 @@ class UI_strings
     // User creation
     public static String createUserHeader = "--> Skapa Ny Användare";
     public static String promptUserName = "Skriv användarnamn:";
-    public static String promptUserID = "Skriv användar id:";
+    public static String promptUserID = "Skriv användar id (YYMMDD-XXX):";
     public static String userNameExists = "Användarnamnet finns redan.";
     public static String userIDExists = "Användarens ID finns redan.";
     public static String createUserSuccess = "Användaren skapades.";
@@ -485,15 +651,34 @@ class UI_strings
     public static String userNameToIDMissmatch = "Användarens Namn och ID är inte ett giltigt par.";
     public static String successfullLogin = "Log-in lyckades. Välkommen.";
     public static String unsuccessfullLogin = "Log-in misslyckades. Försök igen.";
-    public static String logoutSuccessfull = "Du är nu utloggad.";
+    public static String logoutSuccessfull = "Ni är nu utloggad.";
 
     // Activity booking
+    public static String userNotActive = "Ni har inte ett giltigt medlemskap.";
+    public static String userSubscriptionUsable = "Abonnemang hittat och är giltigt.";
+    public static String userSubscriptionNotUsable = "Abonnemang inte giltigt, skapa ett nytt abonnemang.";
     public static String noSuchActivity = "Den aktiviteten finns inte. Försök igen.";
     public static String selectActivityPrompt = "Välj aktivitet:";
     public static String selectRoomPlacePrompt = "Välj plats (ex. 2b eller 1d): ";
     public static String assignedUserToPlace = "Du har registrerats på platsen i rummet.";
     public static String assignedUserToPlaceFail = "Den platsen är redan bokad.";
-
     public static String bookingActivitySuccess = "Bra! Aktiviteten är bokad!";
+
+    // Subscription management
+    public static String selectSubscriptionPrompt = "Hur många månader väljer ni: ";
+    public static String confirmSubscriptionPrompt = "Vill ni gå vidare med betalningen? (j/n): ";
+    public static String assignedSubscriptionToUser = "Bra! Abonnemanget är fixat!";
+    public static String assignedSubscriptionToUserFail = "Nej! Något fungerade inte. Ni har inget abonnemang fixat.";
+    public static String noSuchSubscription = "Det abonnemanget finns inte.";
+    public static String userSubscriptionNotFound = "Användaren har inget abonnemang.";
+    public static String membershipNeeded = "Ni behöver även ett medlemsskap för 100kr. ";
+    public static String priceListPretty = "\n - - - WakeUp Gym Prislista - - - \n" +
+            "Medlemskap – 100 SEK\n" +
+            "1-2 månader – 400 SEK/månad\n" +
+            "3-6 månader – 350 SEK/månad\n" +
+            "7-12 månader – 300 SEK/månad\n" +
+            "Längre än 12 månader – 250 SEK/månad";
+    public static String subscriptionPriceTotal = "Totalt så blir priset för abonnemanget ";
+
 
 }

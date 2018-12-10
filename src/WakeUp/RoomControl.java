@@ -125,7 +125,8 @@ public class RoomControl
 
     /**
      * This will return the list of all places in a room and
-     * the relevant userIDs for places booked.
+     * the relevant userIDs for places booked. Used for storing
+     * bookings in the database.
      *
      * @return allPlaces            a HashMap of placeID -> userID pairs
      */
@@ -152,7 +153,7 @@ public class RoomControl
      */
     public boolean assignUserToRoomPlace(String placeID, String userID)
     {
-        String[] parts = placeID.trim().split("(?<=\\d)"); //"(?<=[a-zA-Z])");
+        String[] parts = placeID.trim().split("(?<=.)"); //"(?<=[a-zA-Z])");
         System.out.println(Arrays.toString(parts));
         //String[] parts = placeID.split("(\\S+)(\\d)");
         //String[] parts = source.split("(?<=\\d)(?=\\D)|(?<=\\D)(?=\\d)");

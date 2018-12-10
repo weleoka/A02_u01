@@ -4,10 +4,10 @@ package WakeUp;
  * Class representing a user of the system.
  *
  */
-public class User extends CSVDB {
-    private static String name;
-    private static String id;
-    private static Status status; // enum class Status
+public class User {
+    private String id;
+    private String name;
+    private Status status; // enum class Status
     // Default empty constructor.
     User() {}
     // Constructor for creating a new user.
@@ -51,35 +51,45 @@ public class User extends CSVDB {
     }
 
 
-
-
+    /**
+     *
+     * @return
+     */
     public String getID()
     {
 
         return this.id;
     }
 
+
+
+
+    /**
+     *
+     * @return name             a String return type
+     */
     public String getName()
     {
 
         return this.name;
     }
 
-    public String getStatus()
+    /**
+     *
+     * @return status           a boolean true if active else false
+     */
+    public boolean getStatus()
     {
 
-        return this.status.toString();
+        return (this.status == status.ACTIVE);
     }
-
-
-
 
     /**
      * Helper to make a string into the correct status enum call.
      *
      * @param sta               a String of the status to set
      */
-    private void setStatus(String sta)
+    public void setStatus(String sta)
     {
 
         switch (sta.toLowerCase())

@@ -16,14 +16,6 @@ case 4: // Secret case for booking an activity. Will fail because no userID.
     bookActivity();
 ```
 
-### Discussion points
-In the mirror project's repository (same course assignment) there is [Carl Granström](https://github.com/Carl-Granstrom/Assignment1). The following are some points to consider on the next student meeting.
-
-#### Mirror project
-
-* Constant variable alfabet should be final and in all uppercase
-
-
 ### Joblist
 A few points that could be improved upon in the code in the repository. 
 

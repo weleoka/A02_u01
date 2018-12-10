@@ -20,6 +20,7 @@ import com.opencsv.*;
  *  See the docs at http://opencsv.sourceforge.net/apidocs/index.html
  *  Available material: https://www.baeldung.com/opencsv
  *
+ * todo: update a CSV line.
  * todo: implement Beans for object storage and retrieval.
  * todo: make DRY the IOException handling by testing CSV in constructor.
  */
@@ -115,7 +116,7 @@ public class CSVDB
 
             while ((nextRecord = csvReader.readNext()) != null)
             {
-                debugCheck(nextRecord);
+                //debugCheck(nextRecord);
                 fullRecord.add(nextRecord);
             }
             reader.close(); // Close reader to prevent memory leaks.
@@ -123,14 +124,15 @@ public class CSVDB
         }
         catch (IOException e)
         {
-            System.out.println("This is an error. The path does not contain a valid CSV file.");
-            System.out.println(e);
+            //System.out.println("This is an error. The path does not contain a valid CSV file.");
+            //System.out.println(e);
 
             return fullRecord;
         }
 
         return fullRecord;
     }
+
 
     /**
      * Helper method to print array for checking items.

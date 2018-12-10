@@ -28,6 +28,7 @@ public enum Status {
     public String toString()
     {
         final String name = this.name;
+
         return name;
     }
 }
