@@ -80,6 +80,36 @@ public class UserControl {
     }
 
     /**
+     * Update the user in DB
+     */
+    public void updateUser()
+    {
+        boolean userFound = false;
+        this.userDB.readCSVFull();
+        String tmpName = this.selectedUser.getName();
+        List<String[]> userList = this.userDB.readCSVFull();
+
+        for (int i = 0; i < userList.size(); i++)
+        {
+            String[] userArr = userList.get(i);
+
+            if (tmpName.equalsIgnoreCase(userArr[0]))
+            {
+                    userArr = this.selectedUser.toArray();
+                    userList.set(i, userArr);
+                    userFound = true;
+                    break;
+            }
+        }
+
+        if (userFound)
+        {
+            System.out.println("DEBUG: User found and updated.");
+            this.userDB.writeCSVMultiLine(userList);
+        }
+    }
+
+    /**
      * Print the entire user database to stdout.
      */
     public void printUserList()
@@ -141,12 +171,12 @@ public class UserControl {
     /**
      * return the status of the selected user
      *
-     * @return status           true if user is active else false
+     * @param status                boolean true if active
      */
-    public void setSelectedUserStatus (String status)
+    public void setSelectedUserStatus (boolean status)
     {
         this.selectedUser.setStatus(status);
-
+        this.updateUser();
     }
 
 
@@ -195,16 +225,6 @@ public class UserControl {
     {
         this.selectedUser = new User(userName, userID);
         this.userDB.writeCSVLine(this.selectedUser.toArray());
-
-        return true;
-    }
-
-    /**
-     * Remove a user.
-     */
-    public boolean removeSelectedUser()
-    {
-        this.selectedUser.setRemoved();
 
         return true;
     }

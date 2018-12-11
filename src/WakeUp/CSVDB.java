@@ -37,6 +37,7 @@ public class CSVDB
         this.CSV_FILE_PATH = Paths.get(pathString);
     }
 
+
     /**
      * Writing a single line to a CSV file.
      *
@@ -50,7 +51,6 @@ public class CSVDB
             CSVWriter writer = new CSVWriter(mFileWriter);
             writer.writeNext(array);
             writer.close();
-
         }
 
         catch (IOException e)
@@ -59,6 +59,7 @@ public class CSVDB
             System.out.println(e);
         }
     }
+
 
     /**
      * Writing multiple lines to a CSV file.
@@ -73,6 +74,7 @@ public class CSVDB
 
             for (String[] array : stringArray)
             {
+                debugCheck(array);
                 writer.writeNext(array);
             }
             writer.close();
@@ -86,11 +88,12 @@ public class CSVDB
         }
     }
 
+
     /**
      * Reading a full CSV file.
      *
      * Preferred method for reading a full CSV file of entries.
-     * todo: possibly count number of lines in CSV file for prebuilding array.
+     * todo: possibly count number of lines in CSV file for pre-building array.
      * todo: java.nio.file.NoSuchFileException: ./userDB.csv catch it.
      *
      * @returns fullRecord              an ArrayList of all the lines in the CSV file
@@ -142,7 +145,7 @@ public class CSVDB
     private void debugCheck(String[] nextRecord)
     {
 
-        for ( String part : nextRecord)
+        for (String part : nextRecord)
         {
 
             try

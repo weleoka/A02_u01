@@ -14,39 +14,54 @@ class WakeUp <<final>> {
     - mainMenu(): void
     - loggedInMenu(): void
     - credentialsPrompt(): String[]
+    - selectActivityPrompt(): String
+    - selectSubscriptionPrompt(): int
+    - confirmSubscriptionPrompt(int): boolean
+
     - createUser(): void
     - createSubscription(): void
-    - logInUser(): void
+    - loginUser(): void
+    - logoutUser(): void
     - bookActivity(): void
     - quit(): void
 }
 class WakeUpHelpers {
     + validateUserID (User): boolean
+    + getIDAsIntArr(String): int[]
+    + sleeper(int): void
 }
 class CSVDB {
     - CSV_FILE_PATH: Path
     - writeCSVLine(String[]): void
     - writeCSVMultiLine(List<String[]>): void
-    - readCSVFull(): ArrayList
-    - readCSVLine(): ArrayList
+    - readCSVFull(): List<String[]>
+    - debugCheck(String[]): void
 }
 
 
 class RoomControl <<(S, #FF7700) singleton>> {
     - selectedRoom: Room
+    - roomDB: CSVDB
     + getRoomActivities(): String []
     + selectRoomByActivity(String activity): boolean
     + selectRoomByRoomID(int roomID): boolean
     + fetchRoomPlacesString(): String[]
     + fetchRoomPlacesList(): List<String>
-    + assignUserToRoomPlace(int userID, int placeID): void
+    + fetchRoomPlacesBookingsList(): HashMap<String, String>
+    + assignUserToRoomPlace(String userID, String placeID): void
+    + createRoom(String[]): boolean
 }
 class Room {
     - type: Activity
     - id: String
+    - roomPlaces: String[][]
+    - ALPHABET: char[]
+    + setActivity(String): void
+    + getActivity(): Activity
     + getAllPlaces(): String []
     + getBookedPlaces(): String[]
-    + setBookedPlaces(int placeID): boolean
+    + setBookedPlace(int placeID): boolean
+    - generatePlaces(int, int): void
     + toString(): String
     + toArray(): String[]
 }
@@ -59,6 +74,7 @@ enum Activity <<enumerate>> {
 
 
 class UserControl <<(S, #FF7700) singleton>> {
+    - userDB: CSVDB
     - selectedUser: User
     - authenticatedUser: User
     + createUser(String userName, String userID): boolean
@@ -68,46 +84,46 @@ class UserControl <<(S, #FF7700) singleton>> {
     + logoutSelectedUser(): boolean
     + removeSelectedUser(): boolean
     + isAuthenticatedUser(): boolean
+    + getSelectedUserID(): String
+    + getSelectedUserStatus(): boolean
+    + setSelectedUSerStatus(String): boolean
+    + updateSelectedUser(): void
 }
 class User {
     - name: String
     - id: String
-    - userStatus: UserStatus
-    + setActive(): void
-    + setInactive(): void
-    + setRemoved(): void
+    - status: boolean
     + getID(): String
-    + getIDAsIntArr(): int[]
     + getName(): String
     + getStatus(): String
+    + setStatus(): String
     + toString(): String
     + toArray(): String[]
-}
-enum Status <<enumerate>> {
-    1: ACTIVE
-    2: INACTIVE
-    3: REMOVED
 }
 
 
 
 class SubscriptionControl <<(S, #FF7700) singleton>> {
     - selectedSubscription: Subscription
+    - subscriptionDB: CSVDB
     + calculateCost(): double
+    + checkSubscriptionExists(): boolean
+    + checkSubscriptionValidNow(): boolean
+    + getStatus(): boolean
+    + setStatus(String): boolean
     + createSubscription(sDate, eDate, userID): boolean
-    + removeSelectedSubscription(): boolean
     + selectSubscriptionByUserID(int userID): void
-    + changeSelectedSubscriptionDates(sDate, eDate): boolean
 }
 class Subscription {
-    - startDate: Date
-    - endDate: Date
+    - sDate: Date
+    - eDate: Date
     - userID: String
-    - subscriptionStatus: Status
+    - status: boolean
     + setSDate(Date): void
     + setEDate(Date): void
-    + setActive(): void
-    + setInactive(): void
+    + getStatus(): boolean
+    + setStatus(String): void
+    + getMonths(): int
     + toString(): String
     + toArray(): String[]
 }
@@ -123,9 +139,7 @@ WakeUp                  -->     UserControl: <<call>>
 'note on link: This could be easy to forget.
 'User                    -->     Subscription: <<call>>
 SubscriptionControl     *--     Subscription: <<create>>
-Subscription            <--     Status: <<use>>
 UserControl             *--     User: <<create>>
-Status                  ->      User: <<use>>
 RoomControl             <--     WakeUp: <<call>>
 Room                    -*      RoomControl
 'WakeUp                  ->      AuthControl: <<call>>
@@ -140,40 +154,6 @@ SubscriptionControl     <-      WakeUp: <<call>>
 
 
 
-
-Flow - new user:
-1) A user starts the application and selects registerUser from mainMenu.
-2) The user is prompted for a userName and then a userID.
-3) The userID is then checked for validity.
-4) A new User is created and the selectedUser is set in UserControl.
-5) The new user is prompted for number of months of subscription.
-6) A new subscription is created with the date as and from now() and the usersID.
-7) SubscriptionControl has the selectedSubscription variable populated.
-8) The cost is calculated and displayed to user. If the selectedUser is not Active
-    then a membership fee is added to the total.
-9) If the user accepts the price then the Subscription and the User are set to Active
-
-
-Flow - Login
-1) A user starts the application and selects loginUser.
-2) The user is prompted for a name and then a userID.
-3) If these are found in the system then the user is authenticated.
-4) The menu changes to the loggedInMenu.
-
-
-Flow - Book Activity
-1) Same flow as for Login and then:
-2) The user selects bookActivity from the loggedInMenu.
-3) A check is done that the user has a valid subscription and
-    that the membership is still in date.
-3) If checks pass then program fetches a list of available activities.
-4) The user selects an activity from the list.
-5) The program fetches a list of available spaces in the room for that activity.
-6) Then the user selects a space and the program checks that it is a vailable,
-    and that the user is not already booked.
-7) Once the user has found an available place then the room is updated with the userID to that place
-8) Room saved to database and user is given a confirmation message.
-9) Program returns to main menu.
 
 
 

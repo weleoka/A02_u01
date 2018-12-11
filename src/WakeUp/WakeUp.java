@@ -1,7 +1,6 @@
 package WakeUp;
 import java.io.IOError;
 import java.time.LocalDate;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;   // Take user input from the console.
 import static java.lang.System.*; // input and output to the console.
@@ -10,7 +9,7 @@ import static java.lang.System.*; // input and output to the console.
  *  Execution controller class for WakeUp Gym UI.
  *
   * @author  Kai Weeks
- *  För D0019N - Assignment 2 - WakeUp Gym
+ *  For D0019N - Assignment 2 - WakeUp Gym
  *
  *  @version na
  *  @since   2018-12-10
@@ -310,7 +309,7 @@ public class WakeUp {
             else
             {
                 System.out.println(UI_strings.menuSelectionFailed);
-                userInput.next(); // flush the in buffer.
+                userInput.reset(); // flush the in buffer.
             }
         }
 
@@ -481,7 +480,7 @@ public class WakeUp {
 
         if (confirmSubscriptionPrompt(subscriptionMonths))
         {
-            USERCONTROL.setSelectedUserStatus("active"); // Membership paid.
+            USERCONTROL.setSelectedUserStatus(true); // Membership paid.
             LocalDate sDate = LocalDate.now().minusDays(1); // Ensure the subscription can be used today.
             LocalDate eDate = sDate.plusMonths(subscriptionMonths);
 
@@ -503,6 +502,12 @@ public class WakeUp {
      *
      * Requires a logged in user with a membership and a valid subscription.
      *
+     * Steps are:
+     * Check that there is a subscription for the user.
+     * Check that the user has a membership.
+     * Check that the subscription is active and in date
+     *
+     * todo: refactor the mess.
      */
     private static void bookActivity()
     {
@@ -517,7 +522,7 @@ public class WakeUp {
             out.println(UI_strings.userSubscriptionNotFound);
         }
 
-        if (USERCONTROL.getSelectedUserStatus())
+        if (USERCONTROL.getSelectedUserStatus() && SUBSCRCONTROL.checkSubscriptionExists())
         {
 
             if (SUBSCRCONTROL.getSubscriptionStatus() && SUBSCRCONTROL.checkSubscriptionValidNow()) // In active and in date?
@@ -532,7 +537,7 @@ public class WakeUp {
                     if (ROOMCONTROL.assignUserToRoomPlace(placeID, USERCONTROL.getSelectedUserID()))
                     {
                         out.println(UI_strings.assignedUserToPlace);
-                        selectRoomPlacePrompt();
+                        //selectRoomPlacePrompt();
                     }
 
                     else
@@ -627,7 +632,7 @@ class UI_strings
     public static String menuSelectionFailed = "Ogiltigt alternativ";
     public static String menuHeader = "\n - - - WakeUP Gym - - -";
     public static String mainMenuAlternatives = "\n1.Logga in\n2.Registrera användare\n9.Avsluta";
-    public static String loggedInMenuAlternatives = "\n1.Boka plats på aktivitet\n2.Hantera abonnemang\n9.Logga ut";
+    public static String loggedInMenuAlternatives = "\n1.Boka plats på aktivitet\n2.Hantera abonnemang och medlemskap\n9.Logga ut";
     public static String makeSelectionPrompt = "\n\nVar god välj ett alternativ:";
     public static String mainMenu = menuHeader + mainMenuAlternatives + makeSelectionPrompt;
     public static String loggedInMenu = menuHeader + loggedInMenuAlternatives + makeSelectionPrompt;
@@ -670,7 +675,7 @@ class UI_strings
     public static String assignedSubscriptionToUser = "Bra! Abonnemanget är fixat!";
     public static String assignedSubscriptionToUserFail = "Nej! Något fungerade inte. Ni har inget abonnemang fixat.";
     public static String noSuchSubscription = "Det abonnemanget finns inte.";
-    public static String userSubscriptionNotFound = "Användaren har inget abonnemang.";
+    public static String userSubscriptionNotFound = "Ni har inget giltigt abonnemang.";
     public static String membershipNeeded = "Ni behöver även ett medlemsskap för 100kr. ";
     public static String priceListPretty = "\n - - - WakeUp Gym Prislista - - - \n" +
             "Medlemskap – 100 SEK\n" +

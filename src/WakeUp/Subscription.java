@@ -18,8 +18,7 @@ public class Subscription {
     private LocalDate sDate;
     private LocalDate eDate;
     private String userID;
-    private Status status; // enum class Status.
-
+    private boolean status = true; // By default subscrtiptions are active.
     // Constructor for creating new subscription
     Subscription(String userID, int months)
     {
@@ -39,7 +38,7 @@ public class Subscription {
     Subscription(String[] subscriptionArr) {
         LocalDate sDate = LocalDate.parse(subscriptionArr[0]);
         LocalDate eDate = LocalDate.parse(subscriptionArr[1]);
-        this.setStatus(subscriptionArr[2]);
+        this.setStatus(Boolean.valueOf(subscriptionArr[2]));
         this.userID = subscriptionArr[3];
     }
 
@@ -108,54 +107,13 @@ public class Subscription {
 
 
     /**
-     * Toggle to active.
-     */
-    public void setActive()
-    {
-        this.status = status.ACTIVE;
-    }
-
-    /**
-     * Toggle to inactive.
-     */
-    public void setInactive()
-    {
-        this.status = status.INACTIVE;
-    }
-
-    /**
-     * Toogle to removed.
-     */
-    public void setRemoved()
-    {
-        this.status = status.REMOVED;
-    }
-
-
-
-
-    /**
      * Helper to make a string into the correct status enum call.
      *
-     * @param sta               a String of the status to set
+     * @param status             a boolean of the status to set
      */
-    private void setStatus(String sta)
+    private void setStatus(boolean status)
     {
-
-        switch (sta.toLowerCase())
-        {
-            case "active":
-                this.status = status.ACTIVE;
-                break;
-
-            case "inactive":
-                this.status = status.INACTIVE;
-                break;
-
-            case "removed":
-                this.status = status.REMOVED;
-                break;
-        }
+        this.status = status;
     }
 
     /**
@@ -165,7 +123,7 @@ public class Subscription {
     public boolean getStatus()
     {
 
-        return (this.status == status.ACTIVE);
+        return this.status;
     }
 
 
@@ -193,7 +151,7 @@ public class Subscription {
                 this.sDate.toString(),
                 this.eDate.toString(),
                 this.userID,
-                Status.ACTIVE.toString() // By default a subscription is active.
+                String.valueOf(this.status)
         };
 
         return tmpArr;

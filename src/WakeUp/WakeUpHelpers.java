@@ -19,7 +19,6 @@ public class WakeUpHelpers {
      * todo: implement the check for the + and - signs if the person is more than 100 years old.
      * todo: refactor to not make external method call from this method.
      *
-     *
      * @param userID                a String of the userID to check for conformity
      * @return boolean              true if valid userID conforms
      */

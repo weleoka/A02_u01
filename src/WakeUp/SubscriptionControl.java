@@ -65,7 +65,15 @@ public class SubscriptionControl
         return netPrice;
     }
 
-
+    /**
+     * Check if there is an instantiated subscription.
+     *
+     * @return boolean          true if a Subscription is instantiated.
+     */
+    public boolean checkSubscriptionExists()
+    {
+        return (this.selectedSubscription != null);
+    }
     /**
      * Checks that the subscription is valid.
      *
@@ -75,6 +83,7 @@ public class SubscriptionControl
      *
      * @return boolean              true if the subscription is valid
      */
+
     public boolean checkSubscriptionValidNow()
     {
         LocalDate today = LocalDate.now();
@@ -120,31 +129,6 @@ public class SubscriptionControl
         return true;
     }
 
-    /**
-     * A subscription can be changed by setting a different
-     * start and end timestamp. The user ID is always the same.
-     *
-     * If only one of the method parameters has a supplied argument the
-     * existing value for the other attribute will be used.
-     *
-     * @param sDate             a timestamp for the new start
-     * @param eDate             a timestamp for the new end
-     */
-    public void changeSelectedSubscription(Date sDate, Date eDate, int userID)
-    {
-
-    }
-
-    /**
-     * Remove subscription
-     * Sets the status to removed.
-     */
-    public void removeSelectedSubscription()
-    {
-
-    }
-
-
 
 
     /**
@@ -155,16 +139,18 @@ public class SubscriptionControl
      */
     public boolean selectSubscriptionByUserId(String userID) throws ArrayIndexOutOfBoundsException
     {
-            List<String[]> userList = this.subscriptionDB.readCSVFull();
+            List<String[]> subscriptions = this.subscriptionDB.readCSVFull();
 
-            for (String[] subscriptionArr : userList)
+            for (int i = 0; i < subscriptions.size(); i++)
             {
+                String[] subscription = (subscriptions.get(i));
 
-                if (userID.equalsIgnoreCase(subscriptionArr[2]))
+                if (userID.equalsIgnoreCase(subscription[1]))
                 {
-                    this.selectedSubscription = new Subscription(subscriptionArr);
+                    System.out.println("found userID matching in database.");
+                    // this.selectedSubscription = new Subscription(subscription);
 
-                    return true;
+                    // return true;
                 }
             }
 

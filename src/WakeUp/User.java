@@ -3,53 +3,27 @@ package WakeUp;
 /**
  * Class representing a user of the system.
  *
+ * The status of the user signifies if they have a membership.
+ *
  */
 public class User {
     private String id;
     private String name;
-    private Status status; // enum class Status
+    private boolean status = false; // By default users are inactive
     // Default empty constructor.
     User() {}
     // Constructor for creating a new user.
     User(String userName, String userID) {
         this.name = userName;
         this.id = userID;
-        this.status = status.INACTIVE;
+        this.status = false;
     }
     // Constructor for loading user from DB.
     User(String[] userArr) {
         this.name = userArr[0];
         this.id = userArr[1];
-        this.setStatus(userArr[2]);
+        this.setStatus(Boolean.valueOf(userArr[2]));
     }
-
-
-
-
-    /**
-     * Toggle the user status to active.
-     */
-    public void setActive()
-    {
-        this.status = status.ACTIVE;
-    }
-
-    /**
-     * Toggle the user status to inactive.
-     */
-    public void setInactive()
-    {
-        this.status = status.INACTIVE;
-    }
-
-    /**
-     * Toggle the user status to removed.
-     */
-    public void setRemoved()
-    {
-        this.status = status.REMOVED;
-    }
-
 
     /**
      *
@@ -81,31 +55,17 @@ public class User {
     public boolean getStatus()
     {
 
-        return (this.status == status.ACTIVE);
+        return this.status;
     }
 
     /**
      * Helper to make a string into the correct status enum call.
      *
-     * @param sta               a String of the status to set
+     * @param status               a boolean of the status to set
      */
-    public void setStatus(String sta)
+    public void setStatus(boolean status)
     {
-
-        switch (sta.toLowerCase())
-        {
-            case "active":
-                this.status = status.ACTIVE;
-                break;
-
-            case "inactive":
-                this.status = status.INACTIVE;
-                break;
-
-            case "removed":
-                this.status = status.REMOVED;
-                break;
-        }
+        this.status = status;
     }
 
 
@@ -132,7 +92,7 @@ public class User {
         String[] tmpArr = {
                 this.name,
                 this.id,
-                this.status.toString()
+                String.valueOf(this.status)
         };
 
         return tmpArr;
