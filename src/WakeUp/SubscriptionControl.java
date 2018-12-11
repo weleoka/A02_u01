@@ -30,6 +30,7 @@ public class SubscriptionControl
     }
 
 
+
     /**
      * Calculates the cost of a subscription.
      *
@@ -128,8 +129,6 @@ public class SubscriptionControl
 
         return true;
     }
-
-
 
     /**
      * Fetch a Subscription from storage by userID

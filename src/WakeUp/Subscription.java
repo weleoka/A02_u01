@@ -45,6 +45,8 @@ public class Subscription {
 
 
 
+    // Getters and setters
+
     /**
      * Get the number of months duration of the subscription.
      *
@@ -60,9 +62,6 @@ public class Subscription {
     }
 
 
-
-
-
     /**
      * Get the starting date.
      *
@@ -73,6 +72,7 @@ public class Subscription {
 
         return this.sDate;
     }
+
     /**
      * Set the starting date.
      *
@@ -82,6 +82,7 @@ public class Subscription {
     {
         this.sDate = sDate;
     }
+
 
     /**
      * Get the ending date.
@@ -93,6 +94,7 @@ public class Subscription {
 
         return this.eDate;
     }
+
     /**
      *  Set the ending date.
      *
@@ -104,7 +106,15 @@ public class Subscription {
     }
 
 
+    /**
+     *
+     * @return status           a boolean true if active else false
+     */
+    public boolean getStatus()
+    {
 
+        return this.status;
+    }
 
     /**
      * Helper to make a string into the correct status enum call.
@@ -116,18 +126,10 @@ public class Subscription {
         this.status = status;
     }
 
-    /**
-     *
-     * @return status           a boolean true if active else false
-     */
-    public boolean getStatus()
-    {
-
-        return this.status;
-    }
 
 
 
+    // Other methods
 
     /**
      * toString override

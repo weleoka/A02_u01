@@ -24,7 +24,6 @@ A few points that could be improved upon in the code in the repository.
 
 * repo: remove the current *.jar dependency files as included in src in this repository. Bring dependencies in dynamically for forks and clones of this repo.
 
-
 ### Style guide
 This project conforms to an older version of the following [style guide](https://github.com/weleoka/myJavaStyleGuide).
 The mian difference is this projects adherance to vertically aligned braces on the same column for constructs. This is depreciated in later versions of the style guide.
@@ -34,6 +33,16 @@ The mian difference is this projects adherance to vertically aligned braces on t
 The application has the following structure. This diagram is not a live view of the code implementation and requires manual updates. The Diagram is generated from PlantUML markdown language.
 
 ![ . . . ](UML_A2.png)
+
+
+### Critical reflection
+The structure of the program is not satisfactory in many regards. I find the controller classes have drawbacks in the way they handle their responsibilities. The three Controller classes are similar, and yet have minor variations. I think with some planning the logic could be moved mor inte the classes and then the whole controller framework could be dropped. For example the WakeUp main class has to call a controller to then get the controller to retrieve the relevant object state  from it's object instances (or actually only one: selectedUser/Subscription/Room).
+
+However I think the whole structure is at a failure point due to not having a versetile permanence and recall of stored objects. The logic of searching for an object to instantiate would usually be done by a DBMS and this application has no such benefits. This is why the Controller classes exist to iterate over data structures looking for the right attribute value for an object before instantiating them.
+
+The main trouble is that I have a reluctance to pass the objects out to the caller (i.e. to WakeUp main) through the controller classes. Hence the controllers have to have methods like fetchRoomPlacesBookingsList() and that would make much more sense to have in the Room class.
+
+
 
 by Kai Weeks, student at Luleå Tekniska Universitet
 
